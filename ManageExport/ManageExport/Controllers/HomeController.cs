@@ -1,4 +1,6 @@
 ﻿using ManageExport.Models;
+using ManageExport.Models.Entity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,10 +14,12 @@ namespace ManageExport.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private UserManager<RatioUser> __user;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, UserManager<RatioUser> user)
         {
             _logger = logger;
+            __user = user;
         }
 
         public IActionResult Index()

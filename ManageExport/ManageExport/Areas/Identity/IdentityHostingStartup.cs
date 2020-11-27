@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Model.Entity;
+using ManageExport.Models.Entity;
 
 [assembly: HostingStartup(typeof(ManageExport.Areas.Identity.IdentityHostingStartup))]
 namespace ManageExport.Areas.Identity

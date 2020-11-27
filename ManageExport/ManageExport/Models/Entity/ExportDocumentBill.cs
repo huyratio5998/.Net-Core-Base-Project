@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Model.Entity
+namespace ManageExport.Models.Entity
 {
     public class ExportDocumentBill : BaseEntity<int>
     {
@@ -12,7 +12,7 @@ namespace Model.Entity
         public DateTime ExportDate { get; set; }
 
         public int SubsidiaryAgentId { get; set; }
-        public User User { get; set; }
+        public RatioUser User { get; set; }
         public IEnumerable<ExportListDetail> ExportListDetails { get; set; }
     }
 }

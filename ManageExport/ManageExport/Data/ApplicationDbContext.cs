@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using ManageExport.Models.Entity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Model.Entity;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace ManageExport.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<User>
+    public class ApplicationDbContext : IdentityDbContext<RatioUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -37,5 +37,7 @@ namespace ManageExport.Data
             //builder.Entity<ExportListDetail>().HasKey(sc => new { sc.ExportDocumentBillId, sc.ProductId});
 
         }
+
+        public DbSet<ManageExport.Models.Entity.Brand> Brand { get; set; }
     }
 }

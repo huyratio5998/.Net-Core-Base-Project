@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace Model.Entity
+namespace ManageExport.Models.Entity
 {
     public class Product : BaseEntity<int>
     {
@@ -21,7 +21,7 @@ namespace Model.Entity
         //        
         [ForeignKey("User")]
         public string SupplyId { get; set; }
-        public User User { get; set; }
+        public RatioUser User { get; set; }
         public int StockId { get; set; }
         public Stock Stock { get; set; }
         public int BrandId { get; set; }

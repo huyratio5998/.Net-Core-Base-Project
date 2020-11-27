@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Model.Entity
+namespace ManageExport.Models.Entity
 {
     public class Stock : BaseEntity<int>
     {
