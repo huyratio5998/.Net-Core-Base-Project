@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ManageExport_V2.Migrations
 {
-    public partial class initiatetable : Migration
+    public partial class addmodel : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -4,14 +4,16 @@ using ManageExport_V2.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ManageExport_V2.Migrations
 {
     [DbContext(typeof(ExportContext))]
-    partial class ExportContextModelSnapshot : ModelSnapshot
+    [Migration("20201130030452_add-model")]
+    partial class addmodel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -268,7 +270,7 @@ namespace ManageExport_V2.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Age")
+                    b.Property<int>("Age")
                         .HasColumnType("int");
 
                     b.Property<string>("AgentName")
@@ -304,10 +306,10 @@ namespace ManageExport_V2.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("Salary")
+                    b.Property<double>("Salary")
                         .HasColumnType("float");
 
-                    b.Property<int?>("SubsidiaryTotalProduct")
+                    b.Property<int>("SubsidiaryTotalProduct")
                         .HasColumnType("int");
 
                     b.Property<string>("SupplyCode")

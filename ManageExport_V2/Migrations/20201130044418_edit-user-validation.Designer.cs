@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ManageExport_V2.Migrations
 {
     [DbContext(typeof(ExportContext))]
-    [Migration("20201127103726_initiate table")]
-    partial class initiatetable
+    [Migration("20201130044418_edit-user-validation")]
+    partial class edituservalidation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -270,7 +270,7 @@ namespace ManageExport_V2.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Age")
+                    b.Property<int?>("Age")
                         .HasColumnType("int");
 
                     b.Property<string>("AgentName")
@@ -306,10 +306,10 @@ namespace ManageExport_V2.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Salary")
+                    b.Property<double?>("Salary")
                         .HasColumnType("float");
 
-                    b.Property<int>("SubsidiaryTotalProduct")
+                    b.Property<int?>("SubsidiaryTotalProduct")
                         .HasColumnType("int");
 
                     b.Property<string>("SupplyCode")

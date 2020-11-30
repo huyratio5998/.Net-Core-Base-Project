@@ -14,16 +14,17 @@ namespace ManageExport_V2.Models.Entity
         public string Username { get; set; }
         public string Password { get; set; }
         public string Note { get; set; }
-        public int Age { get; set; }
+        public int? Age { get; set; }
         public Gender Gender { get; set; }
         public string Address { get; set; }
         public string City { get; set; }
         public UserType UserType { get; set; }
-        public int SubsidiaryTotalProduct { get; set; }
+        public int? SubsidiaryTotalProduct { get; set; }
         public string AgentName { get; set; }
         public string SupplyCode { get; set; }
         public string SupplyName { get; set; }
-        public double Salary { get; set; }
+        public double? Salary { get; set; }
+        public string Avatar { get; set; }
 
         public IEnumerable<Product> Products { get; set; }
         public IEnumerable<ExportDocumentBill> ExportDocumentBills { get; set; }
