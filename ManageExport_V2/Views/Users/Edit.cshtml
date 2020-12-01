@@ -11,12 +11,25 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
                 <input asp-for="FirstName" class="form-control" />
                 <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @if (string.IsNullOrEmpty(Model.Avatar))
+                {
+                    <img src="~/images/People/images96.jpg" style="width:250px;height:250px;" class="xx" alt="Alternate Text" />
+                }
+                else
+                {
+                    <img src="~/images/People/@Model.Avatar" style="width:250px;height:250px;" class="xx" alt="Alternate Text" />
+
+                }                
+                <input asp-for="ImageFile" accept="images/*" id="InImage" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="LastName" class="control-label"></label>
@@ -55,7 +68,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Gender" class="control-label"></label>
-                <select asp-for="Gender" class="form-control"  asp-items="Html.GetEnumSelectList<Gender>()"></select>
+                <select asp-for="Gender" class="form-control" asp-items="Html.GetEnumSelectList<Gender>()"></select>
                 <span asp-validation-for="Gender" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -70,7 +83,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="UserType" class="control-label"></label>
-                <select asp-for="UserType" class="form-control"  asp-items="Html.GetEnumSelectList<UserType>()"></select>
+                <select asp-for="UserType" class="form-control" asp-items="Html.GetEnumSelectList<UserType>()"></select>
                 <span asp-validation-for="UserType" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -98,17 +111,7 @@
                 <input asp-for="Salary" class="form-control" />
                 <span asp-validation-for="Salary" class="text-danger"></span>
             </div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="CreatedDate" class="control-label"></label>
-                <input asp-for="CreatedDate" class="form-control" />
-                <span asp-validation-for="CreatedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ModifiedDate" class="control-label"></label>
-                <input asp-for="ModifiedDate" class="form-control" />
-                <span asp-validation-for="ModifiedDate" class="text-danger"></span>
-            </div>
+            <input type="hidden" asp-for="Id" />           
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -119,7 +122,22 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
-
+<script type="text/javascript">
+    $(function () {
+        $("#InImage").change(function () {
+            preview(this);
+        });
+        function preview(input) {
+            if (input.files || input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $(".xx").attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    });
+</script>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

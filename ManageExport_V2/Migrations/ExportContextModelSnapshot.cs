@@ -274,6 +274,9 @@ namespace ManageExport_V2.Migrations
                     b.Property<string>("AgentName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Avatar")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 

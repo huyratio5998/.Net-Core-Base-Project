@@ -7,25 +7,29 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ManageExport_V2.Models;
 using ManageExport_V2.Models.Entity;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace ManageExport_V2.Controllers
 {
     public class UsersController : Controller
     {
         private readonly ExportContext _context;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public UsersController(ExportContext context)
+        public UsersController(ExportContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            _hostEnvironment = hostEnvironment;
         }
 
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Users.ToListAsync());
+            return View(await _context.Users.OrderBy(x=>x.UserType).ToListAsync());
         }
 
-        // GET: Users/Details/5
+        // GET: Users/Details/5 
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -54,13 +58,28 @@ namespace ManageExport_V2.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FirstName,LastName,Phone,Email,Username,Password,Note,Age,Gender,Address,City,UserType,SubsidiaryTotalProduct,AgentName,SupplyCode,SupplyName,Salary,Id,CreatedDate,ModifiedDate")] User user)
+        public async Task<IActionResult> Create([Bind("FirstName,LastName,Phone,Email,Username,Password,Note,Age,Gender,Address,City,UserType,SubsidiaryTotalProduct,AgentName,SupplyCode,ImageFile,SupplyName,Salary,Id,CreatedDate,ModifiedDate")] User user)
         {
             if (ModelState.IsValid)
             {
+                //Save image to wwwroot/image
+                string wwwRootPath = _hostEnvironment.WebRootPath;
+                //string fileName = Path.GetFileNameWithoutExtension(user.ImageFile.FileName);
+                //string extension = Path.GetExtension(user.ImageFile.FileName);
+                if (user.ImageFile != null)
+                {
+                    user.Avatar = user.ImageFile.FileName;
+                    string path = Path.Combine(wwwRootPath + "/Images/People", user.Avatar);
+                    using (var fileStream = new FileStream(path, FileMode.Create))
+                    {
+                        await user.ImageFile.CopyToAsync(fileStream);
+                    }
+                }
+                //Insert record
+                user.CreatedDate=user.ModifiedDate = DateTime.Now.ToUniversalTime();                
                 _context.Add(user);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));               
             }
             return View(user);
         }
@@ -86,7 +105,7 @@ namespace ManageExport_V2.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FirstName,LastName,Phone,Email,Username,Password,Note,Age,Gender,Address,City,UserType,SubsidiaryTotalProduct,AgentName,SupplyCode,SupplyName,Salary,Id,CreatedDate,ModifiedDate")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("FirstName,LastName,Phone,Email,Username,Password,Note,Age,Gender,Address,City,UserType,SubsidiaryTotalProduct,AgentName,SupplyCode,ImageFile,SupplyName,Salary,Id,CreatedDate,ModifiedDate")] User user)
         {
             if (id != user.Id)
             {
@@ -97,6 +116,29 @@ namespace ManageExport_V2.Controllers
             {
                 try
                 {
+                    if (user.ImageFile != null)
+                    {                                                                          
+                        var imagePath = Path.Combine(_hostEnvironment.WebRootPath, "images/People", user.ImageFile.FileName);
+                        if (!System.IO.File.Exists(imagePath))
+                        {
+                            string wwwRootPath = _hostEnvironment.WebRootPath;
+                            user.Avatar = user.ImageFile.FileName;
+                            string path = Path.Combine(wwwRootPath + "/Images/People", user.Avatar);
+                            using (var fileStream = new FileStream(path, FileMode.Create))
+                            {
+                                await user.ImageFile.CopyToAsync(fileStream);
+                            }
+                        }
+                        else
+                        {
+                            user.Avatar = user.ImageFile.FileName;
+                        }
+                    }
+                    else
+                    {
+                        user.Avatar = _context.Users.Find(id).Avatar;
+                    }
+                    user.ModifiedDate = DateTime.Now.ToUniversalTime();
                     _context.Update(user);
                     await _context.SaveChangesAsync();
                 }

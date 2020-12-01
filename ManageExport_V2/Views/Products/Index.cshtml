@@ -22,12 +22,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Number)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MFG)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EXP)
-            </th>
+          
             <th>
                 @Html.DisplayNameFor(model => model.Country)
             </th>
@@ -44,7 +39,7 @@
                 @Html.DisplayNameFor(model => model.RecieveDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User)
+                Supply
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Stock)
@@ -52,12 +47,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Brand)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ModifiedDate)
-            </th>
+          
             <th></th>
         </tr>
     </thead>
@@ -72,13 +62,7 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Number)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MFG)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EXP)
-            </td>
+            </td>           
             <td>
                 @Html.DisplayFor(modelItem => item.Country)
             </td>
@@ -95,20 +79,15 @@
                 @Html.DisplayFor(modelItem => item.RecieveDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.User.Id)
+                @Html.DisplayFor(modelItem => item.User.FirstName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Stock.Id)
+                @Html.DisplayFor(modelItem => item.Stock.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Brand.Id)
+                @Html.DisplayFor(modelItem => item.Brand.ShortName)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ModifiedDate)
-            </td>
+          
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

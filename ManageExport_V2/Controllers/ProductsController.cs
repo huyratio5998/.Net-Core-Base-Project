@@ -50,9 +50,9 @@ namespace ManageExport_V2.Controllers
         // GET: Products/Create
         public IActionResult Create()
         {
-            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Id");
-            ViewData["StockId"] = new SelectList(_context.Stocks, "Id", "Id");
-            ViewData["SupplyId"] = new SelectList(_context.Users, "Id", "Id");
+            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "ShortName");
+            ViewData["StockId"] = new SelectList(_context.Stocks, "Id", "Name");
+            ViewData["SupplyId"] = new SelectList(_context.Users, "Id", "SupplyName");
             return View();
         }
 
@@ -69,9 +69,9 @@ namespace ManageExport_V2.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Id", product.BrandId);
-            ViewData["StockId"] = new SelectList(_context.Stocks, "Id", "Id", product.StockId);
-            ViewData["SupplyId"] = new SelectList(_context.Users, "Id", "Id", product.SupplyId);
+            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "ShortName", product.Brand.ShortName);
+            ViewData["StockId"] = new SelectList(_context.Stocks, "Id", "Name", product.Stock.Name);
+            ViewData["SupplyId"] = new SelectList(_context.Users, "Id", "SupplyName", product.User.SupplyName);
             return View(product);
         }
 
@@ -88,9 +88,9 @@ namespace ManageExport_V2.Controllers
             {
                 return NotFound();
             }
-            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Id", product.BrandId);
-            ViewData["StockId"] = new SelectList(_context.Stocks, "Id", "Id", product.StockId);
-            ViewData["SupplyId"] = new SelectList(_context.Users, "Id", "Id", product.SupplyId);
+            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "ShortName", product.Brand.ShortName);
+            ViewData["StockId"] = new SelectList(_context.Stocks, "Id", "Name", product.Stock.Name);
+            ViewData["SupplyId"] = new SelectList(_context.Users, "Id", "SupplyName", product.User.SupplyName);
             return View(product);
         }
 
@@ -126,9 +126,9 @@ namespace ManageExport_V2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Id", product.BrandId);
-            ViewData["StockId"] = new SelectList(_context.Stocks, "Id", "Id", product.StockId);
-            ViewData["SupplyId"] = new SelectList(_context.Users, "Id", "Id", product.SupplyId);
+            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "ShortName", product.Brand.ShortName);
+            ViewData["StockId"] = new SelectList(_context.Stocks, "Id", "Name", product.Stock.Name);
+            ViewData["SupplyId"] = new SelectList(_context.Users, "Id", "SupplyName", product.User.SupplyName);
             return View(product);
         }
 

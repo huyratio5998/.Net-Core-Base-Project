@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace ManageExport_V2.Models.Entity
@@ -29,6 +31,8 @@ namespace ManageExport_V2.Models.Entity
         public IEnumerable<Product> Products { get; set; }
         public IEnumerable<ExportDocumentBill> ExportDocumentBills { get; set; }
 
+        [NotMapped]        
+        public IFormFile ImageFile { get; set; }
     }
     public enum Gender
     {
