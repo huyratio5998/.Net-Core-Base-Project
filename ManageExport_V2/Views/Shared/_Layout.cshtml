@@ -43,7 +43,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="ProductCategories" asp-action="Index">ProductCategories</a>
                         </li>
-                        
+
                     </ul>
                 </div>
             </div>
@@ -59,9 +59,25 @@
         <div class="container">
             &copy; 2020 - ManageExport_V2 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
-    </footer>    
+    </footer>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#InImage").change(function () {
+                preview(this);
+            });
+            function preview(input) {
+                if (input.files || input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $(".xx").attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+        });
+    </script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

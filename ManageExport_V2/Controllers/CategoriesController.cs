@@ -58,6 +58,7 @@ namespace ManageExport_V2.Controllers
         {
             if (ModelState.IsValid)
             {
+                category.CreatedDate=category.ModifiedDate = DateTime.UtcNow;
                 _context.Add(category);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -97,6 +98,7 @@ namespace ManageExport_V2.Controllers
             {
                 try
                 {
+                    category.ModifiedDate = DateTime.UtcNow;
                     _context.Update(category);
                     await _context.SaveChangesAsync();
                 }

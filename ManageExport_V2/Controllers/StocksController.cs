@@ -58,6 +58,7 @@ namespace ManageExport_V2.Controllers
         {
             if (ModelState.IsValid)
             {
+                stock.CreatedDate = stock.ModifiedDate= DateTime.Now.ToUniversalTime();
                 _context.Add(stock);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -97,6 +98,7 @@ namespace ManageExport_V2.Controllers
             {
                 try
                 {
+                    stock.ModifiedDate = DateTime.Now.ToUniversalTime();
                     _context.Update(stock);
                     await _context.SaveChangesAsync();
                 }

@@ -27,7 +27,7 @@
                 {
                     <img src="~/images/People/@Model.Avatar" style="width:250px;height:250px;" class="xx" alt="Alternate Text" />
 
-                }                
+                }
                 <input asp-for="ImageFile" accept="images/*" id="InImage" />
                 <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
@@ -111,7 +111,10 @@
                 <input asp-for="Salary" class="form-control" />
                 <span asp-validation-for="Salary" class="text-danger"></span>
             </div>
-            <input type="hidden" asp-for="Id" />           
+            <input type="hidden" asp-for="Id" />
+            <input asp-for="CreatedDate" type="hidden" />
+            <input asp-for="Avatar" type="hidden" />
+            <input asp-for="ModifiedDate" type="hidden" />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

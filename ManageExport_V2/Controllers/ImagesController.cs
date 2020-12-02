@@ -7,16 +7,22 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ManageExport_V2.Models;
 using ManageExport_V2.Models.Entity;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using ManageExport_V2.Services.Interfaces;
 
 namespace ManageExport_V2.Controllers
 {
     public class ImagesController : Controller
     {
-        private readonly ExportContext _context;
+        private readonly ExportContext _context;        
+        private ICommonServices _commonServices;
 
-        public ImagesController(ExportContext context)
+
+        public ImagesController(ExportContext context, ICommonServices commonServices)
         {
-            _context = context;
+            _context = context;            
+            _commonServices = commonServices;
         }
 
         // GET: Images
@@ -48,7 +54,7 @@ namespace ManageExport_V2.Controllers
         // GET: Images/Create
         public IActionResult Create()
         {
-            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id");
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name");
             return View();
         }
 
@@ -61,6 +67,8 @@ namespace ManageExport_V2.Controllers
         {
             if (ModelState.IsValid)
             {
+                await _commonServices.CreateImage(image.ImageFile, image.Url, "/images/Products");
+                image.CreatedDate = image.ModifiedDate = DateTime.UtcNow;
                 _context.Add(image);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -82,7 +90,7 @@ namespace ManageExport_V2.Controllers
             {
                 return NotFound();
             }
-            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", image.ProductId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", image.Product.Name);
             return View(image);
         }
 
@@ -102,6 +110,8 @@ namespace ManageExport_V2.Controllers
             {
                 try
                 {
+                    await _commonServices.EditImage(image.ImageFile, image.Url, "/images/Products");
+                    image.ModifiedDate = DateTime.Now.ToUniversalTime();
                     _context.Update(image);
                     await _context.SaveChangesAsync();
                 }
@@ -118,7 +128,7 @@ namespace ManageExport_V2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", image.ProductId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", image.Product.Name);
             return View(image);
         }
 

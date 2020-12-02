@@ -9,18 +9,18 @@ using ManageExport_V2.Models;
 using ManageExport_V2.Models.Entity;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using ManageExport_V2.Services.Interfaces;
 
 namespace ManageExport_V2.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly ExportContext _context;
-        private readonly IWebHostEnvironment _hostEnvironment;
-
-        public UsersController(ExportContext context, IWebHostEnvironment hostEnvironment)
+        private readonly ExportContext _context;        
+        private ICommonServices _commonServices;
+        public UsersController(ExportContext context,ICommonServices commonServices)
         {
-            _context = context;
-            _hostEnvironment = hostEnvironment;
+            _context = context;            
+            _commonServices = commonServices;
         }
 
         // GET: Users
@@ -63,18 +63,10 @@ namespace ManageExport_V2.Controllers
             if (ModelState.IsValid)
             {
                 //Save image to wwwroot/image
-                string wwwRootPath = _hostEnvironment.WebRootPath;
+                //string wwwRootPath = _hostEnvironment.WebRootPath;
                 //string fileName = Path.GetFileNameWithoutExtension(user.ImageFile.FileName);
                 //string extension = Path.GetExtension(user.ImageFile.FileName);
-                if (user.ImageFile != null)
-                {
-                    user.Avatar = user.ImageFile.FileName;
-                    string path = Path.Combine(wwwRootPath + "/Images/People", user.Avatar);
-                    using (var fileStream = new FileStream(path, FileMode.Create))
-                    {
-                        await user.ImageFile.CopyToAsync(fileStream);
-                    }
-                }
+                user.Avatar= await _commonServices.CreateImage(user.ImageFile, user.Avatar, "/images/People");
                 //Insert record
                 user.CreatedDate=user.ModifiedDate = DateTime.Now.ToUniversalTime();                
                 _context.Add(user);
@@ -105,39 +97,17 @@ namespace ManageExport_V2.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FirstName,LastName,Phone,Email,Username,Password,Note,Age,Gender,Address,City,UserType,SubsidiaryTotalProduct,AgentName,SupplyCode,ImageFile,SupplyName,Salary,Id,CreatedDate,ModifiedDate")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("FirstName,LastName,Phone,Email,Username,Password,Note,Age,Gender,Address,City,UserType,SubsidiaryTotalProduct,AgentName,SupplyCode,ImageFile,SupplyName,Salary,Id,CreatedDate,ModifiedDate,Avatar")] User user)
         {
             if (id != user.Id)
             {
-                return NotFound();
+                return NotFound();   
             }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    if (user.ImageFile != null)
-                    {                                                                          
-                        var imagePath = Path.Combine(_hostEnvironment.WebRootPath, "images/People", user.ImageFile.FileName);
-                        if (!System.IO.File.Exists(imagePath))
-                        {
-                            string wwwRootPath = _hostEnvironment.WebRootPath;
-                            user.Avatar = user.ImageFile.FileName;
-                            string path = Path.Combine(wwwRootPath + "/Images/People", user.Avatar);
-                            using (var fileStream = new FileStream(path, FileMode.Create))
-                            {
-                                await user.ImageFile.CopyToAsync(fileStream);
-                            }
-                        }
-                        else
-                        {
-                            user.Avatar = user.ImageFile.FileName;
-                        }
-                    }
-                    else
-                    {
-                        user.Avatar = _context.Users.Find(id).Avatar;
-                    }
+                    user.Avatar= await _commonServices.EditImage(user.ImageFile, user.Avatar, "/images/People");
                     user.ModifiedDate = DateTime.Now.ToUniversalTime();
                     _context.Update(user);
                     await _context.SaveChangesAsync();

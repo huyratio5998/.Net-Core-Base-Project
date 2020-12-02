@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ManageExport_V2.Models;
 using ManageExport_V2.Models.Entity;
+using ManageExport_V2.Services.Interfaces;
 
 namespace ManageExport_V2.Controllers
 {
     public class ProductsController : Controller
     {
         private readonly ExportContext _context;
+        private ICommonServices _commonServices;
 
-        public ProductsController(ExportContext context)
+
+        public ProductsController(ExportContext context,ICommonServices commonServices)
         {
             _context = context;
+            _commonServices = commonServices;
         }
 
         // GET: Products
@@ -61,10 +65,12 @@ namespace ManageExport_V2.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Code,Name,Number,MFG,EXP,Country,Description,Price,MainImage,RecieveDate,SupplyId,StockId,BrandId,Id,CreatedDate,ModifiedDate")] Product product)
+        public async Task<IActionResult> Create([Bind("Code,Name,Number,MFG,EXP,Country,Description,Price,MainImage,RecieveDate,SupplyId,StockId,BrandId,Id,CreatedDate,ModifiedDate,ImageFile")] Product product)
         {
             if (ModelState.IsValid)
-            {
+            {                
+                product.MainImage = await _commonServices.CreateImage(product.ImageFile, product.MainImage, "/images/Products/"+ product.Name);
+                product.CreatedDate = product.ModifiedDate = DateTime.UtcNow;
                 _context.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -99,7 +105,7 @@ namespace ManageExport_V2.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Code,Name,Number,MFG,EXP,Country,Description,Price,MainImage,RecieveDate,SupplyId,StockId,BrandId,Id,CreatedDate,ModifiedDate")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Code,Name,Number,MFG,EXP,Country,Description,Price,MainImage,RecieveDate,SupplyId,StockId,BrandId,Id,CreatedDate,ModifiedDate,ImageFile")] Product product)
         {
             if (id != product.Id)
             {
@@ -110,6 +116,8 @@ namespace ManageExport_V2.Controllers
             {
                 try
                 {
+                    product.MainImage= await _commonServices.CreateImage(product.ImageFile, product.MainImage, "/images/Products/" + product.Name);
+                    product.ModifiedDate = DateTime.UtcNow;
                     _context.Update(product);
                     await _context.SaveChangesAsync();
                 }
