@@ -56,7 +56,8 @@ namespace ManageExport_V2.Controllers
         {
             ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "ShortName");
             ViewData["StockId"] = new SelectList(_context.Stocks, "Id", "Name");
-            ViewData["SupplyId"] = new SelectList(_context.Users, "Id", "SupplyName");
+            var lstSupplies = _context.Users.Where(x => x.UserType.Equals(UserType.Supply));
+            ViewData["SupplyId"] = new SelectList(lstSupplies, "Id", "SupplyName");
             return View();
         }
 
@@ -65,7 +66,7 @@ namespace ManageExport_V2.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Code,Name,Number,MFG,EXP,Country,Description,Price,MainImage,RecieveDate,SupplyId,StockId,BrandId,Id,CreatedDate,ModifiedDate,ImageFile")] Product product)
+        public async Task<IActionResult> Create([Bind("Code,Name,Number,MFG,EXP,Country,Description,Price,MainImage,RecieveDate,SupplyId,StockId,BrandId,Id,CreatedDate,ModifiedDate,ImageFile,DisplayName")] Product product)
         {
             if (ModelState.IsValid)
             {                
@@ -77,7 +78,8 @@ namespace ManageExport_V2.Controllers
             }
             ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "ShortName", product.Brand.ShortName);
             ViewData["StockId"] = new SelectList(_context.Stocks, "Id", "Name", product.Stock.Name);
-            ViewData["SupplyId"] = new SelectList(_context.Users, "Id", "SupplyName", product.User.SupplyName);
+            var lstSupplies = _context.Users.Where(x => x.UserType.Equals(UserType.Supply));
+            ViewData["SupplyId"] = new SelectList(lstSupplies, "Id", "SupplyName", product.User.SupplyName);
             return View(product);
         }
 
@@ -93,10 +95,15 @@ namespace ManageExport_V2.Controllers
             if (product == null)
             {
                 return NotFound();
-            }
-            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "ShortName", product.Brand.ShortName);
-            ViewData["StockId"] = new SelectList(_context.Stocks, "Id", "Name", product.Stock.Name);
-            ViewData["SupplyId"] = new SelectList(_context.Users, "Id", "SupplyName", product.User.SupplyName);
+            }            
+            var lstSupplies = _context.Users.Where(x => x.UserType.Equals(UserType.Supply));            
+            var currentBrand = _context.Brands.FirstOrDefault(x => x.Id == product.BrandId).ShortName;
+            var currentStock = _context.Stocks.FirstOrDefault(x => x.Id == product.StockId).Name;
+            var currentSupply = lstSupplies.FirstOrDefault(x => x.Id == product.SupplyId).SupplyName;
+
+            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "ShortName", currentBrand);
+            ViewData["StockId"] = new SelectList(_context.Stocks, "Id", "Name", currentStock);
+            ViewData["SupplyId"] = new SelectList(lstSupplies, "Id", "SupplyName", currentSupply);
             return View(product);
         }
 
@@ -105,7 +112,7 @@ namespace ManageExport_V2.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Code,Name,Number,MFG,EXP,Country,Description,Price,MainImage,RecieveDate,SupplyId,StockId,BrandId,Id,CreatedDate,ModifiedDate,ImageFile")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Code,Name,Number,MFG,EXP,Country,Description,Price,MainImage,RecieveDate,SupplyId,StockId,BrandId,Id,CreatedDate,ModifiedDate,ImageFile,DisplayName")] Product product)
         {
             if (id != product.Id)
             {
@@ -116,7 +123,7 @@ namespace ManageExport_V2.Controllers
             {
                 try
                 {
-                    product.MainImage= await _commonServices.CreateImage(product.ImageFile, product.MainImage, "/images/Products/" + product.Name);
+                    product.MainImage= await _commonServices.EditImage(product.ImageFile, product.MainImage, "/images/Products/" + product.Name);
                     product.ModifiedDate = DateTime.UtcNow;
                     _context.Update(product);
                     await _context.SaveChangesAsync();

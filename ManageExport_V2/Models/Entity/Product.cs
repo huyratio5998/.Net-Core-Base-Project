@@ -10,6 +10,7 @@ namespace ManageExport_V2.Models.Entity
     {
         public string Code { get; set; }
         public string Name { get; set; }
+        public string DisplayName { get; set; }
         public  int Number { get; set; }        
         public DateTime MFG { get; set; }        
         public DateTime EXP { get; set; }

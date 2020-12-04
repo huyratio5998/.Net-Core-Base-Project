@@ -11,10 +11,10 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">                
-                <img src="~/images/People/images96.jpg" style="width:250px;height:250px;" class="xx" alt="Alternate Text" />
+                <img src="~/images/People/images96.jpg" style="width:250px;height:auto;" class="xx" alt="Alternate Text" />
                 <input asp-for="ImageFile" accept="images/*" id="InImage" />
                 <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
@@ -32,22 +32,6 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
-<script type="text/javascript">
-    $(function () {
-        $("#InImage").change(function () {
-            preview(this);
-        });
-        function preview(input) {
-            if (input.files || input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    $(".xx").attr('src', e.target.result);
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-    });
-</script>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

@@ -34,8 +34,7 @@ namespace ManageExport_V2.Services
                     {
                         await imageFile.CopyToAsync(fileStream);
                     }
-                }
-                else imageName = "images96.jpg";
+                }                
                 return imageName;
             }
             catch(Exception e)
@@ -54,8 +53,13 @@ namespace ManageExport_V2.Services
                     string wwwRootPath = _hostEnvironment.WebRootPath;
                     var imagePath = Path.Combine(wwwRootPath+saveFolder, imageFile.FileName);
                     if (!System.IO.File.Exists(imagePath))
-                    {                        
+                    {      
+                        // create image when path not exist
                         imageName = imageFile.FileName;
+                        if (!Directory.Exists(wwwRootPath + saveFolder))
+                        {
+                            Directory.CreateDirectory(wwwRootPath + saveFolder);
+                        }
                         string path = Path.Combine(wwwRootPath + saveFolder, imageName);
                         using (var fileStream = new FileStream(path, FileMode.Create))
                         {

@@ -30,12 +30,13 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
+    var url = $"{item.Product.Name}/{item.Url}";
         <tr>
             <td>
-                <img style="width:150px;height:150px;" src="~/images/People/@item.Url" />
+                <img style="width:auto;height:150px;" src="~/images/Products/@url" />
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Product.Id)
+                @Html.DisplayFor(modelItem => item.Product.DisplayName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CreatedDate)

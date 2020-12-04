@@ -18,7 +18,7 @@ namespace ManageExport_V2.Models
         public DbSet<Category> Categories { get; set; }
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<ExportListDetail> ExportListDetails { get; set; }
-        public DbSet<ExportDocumentBill> ExportDocumentBills { get; set; }
+        public DbSet<ExportProductBill> ExportProductBills { get; set; }
         public DbSet<Image> Images { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<User> Users { get; set; }
@@ -31,7 +31,7 @@ namespace ManageExport_V2.Models
             builder.Entity<Category>(entity => { entity.ToTable("Category"); });
             builder.Entity<Stock>(entity => { entity.ToTable("Stock"); });
             builder.Entity<ExportListDetail>(entity => { entity.ToTable("ExportListDetail"); });
-            builder.Entity<ExportDocumentBill>(entity => { entity.ToTable("ExportDocumentBill"); });
+            builder.Entity<ExportProductBill>(entity => { entity.ToTable("ExportProductBill"); });
             builder.Entity<Image>(entity => { entity.ToTable("Image"); });
             builder.Entity<Brand>(entity => { entity.ToTable("Brand"); });
             builder.Entity<User>(entity => { entity.ToTable("User"); });

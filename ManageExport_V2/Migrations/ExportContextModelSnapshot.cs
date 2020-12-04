@@ -67,7 +67,38 @@ namespace ManageExport_V2.Migrations
                     b.ToTable("Category");
                 });
 
-            modelBuilder.Entity("ManageExport_V2.Models.Entity.ExportDocumentBill", b =>
+            modelBuilder.Entity("ManageExport_V2.Models.Entity.ExportListDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExportDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ExportProductBillId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExportProductBillId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ExportListDetail");
+                });
+
+            modelBuilder.Entity("ManageExport_V2.Models.Entity.ExportProductBill", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -86,9 +117,6 @@ namespace ManageExport_V2.Migrations
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("SubsidiaryAgentId")
-                        .HasColumnType("int");
-
                     b.Property<double>("TotalMoney")
                         .HasColumnType("float");
 
@@ -99,38 +127,7 @@ namespace ManageExport_V2.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ExportDocumentBill");
-                });
-
-            modelBuilder.Entity("ManageExport_V2.Models.Entity.ExportListDetail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ExportDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ExportDocumentBillId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ExportDocumentBillId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ExportListDetail");
+                    b.ToTable("ExportProductBill");
                 });
 
             modelBuilder.Entity("ManageExport_V2.Models.Entity.Image", b =>
@@ -179,6 +176,9 @@ namespace ManageExport_V2.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DisplayName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("EXP")
@@ -330,20 +330,11 @@ namespace ManageExport_V2.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("ManageExport_V2.Models.Entity.ExportDocumentBill", b =>
-                {
-                    b.HasOne("ManageExport_V2.Models.Entity.User", "User")
-                        .WithMany("ExportDocumentBills")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("ManageExport_V2.Models.Entity.ExportListDetail", b =>
                 {
-                    b.HasOne("ManageExport_V2.Models.Entity.ExportDocumentBill", "ExportDocumentBill")
+                    b.HasOne("ManageExport_V2.Models.Entity.ExportProductBill", "ExportDocumentBill")
                         .WithMany("ExportListDetails")
-                        .HasForeignKey("ExportDocumentBillId")
+                        .HasForeignKey("ExportProductBillId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -356,6 +347,15 @@ namespace ManageExport_V2.Migrations
                     b.Navigation("ExportDocumentBill");
 
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("ManageExport_V2.Models.Entity.ExportProductBill", b =>
+                {
+                    b.HasOne("ManageExport_V2.Models.Entity.User", "User")
+                        .WithMany("ExportDocumentBills")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ManageExport_V2.Models.Entity.Image", b =>
@@ -425,7 +425,7 @@ namespace ManageExport_V2.Migrations
                     b.Navigation("ProductCategories");
                 });
 
-            modelBuilder.Entity("ManageExport_V2.Models.Entity.ExportDocumentBill", b =>
+            modelBuilder.Entity("ManageExport_V2.Models.Entity.ExportProductBill", b =>
                 {
                     b.Navigation("ExportListDetails");
                 });

@@ -29,7 +29,7 @@ namespace ManageExport_V2.Models.Entity
         public string Avatar { get; set; }
 
         public IEnumerable<Product> Products { get; set; }
-        public IEnumerable<ExportDocumentBill> ExportDocumentBills { get; set; }
+        public IEnumerable<ExportProductBill> ExportDocumentBills { get; set; }
 
         [NotMapped]        
         public IFormFile ImageFile { get; set; }

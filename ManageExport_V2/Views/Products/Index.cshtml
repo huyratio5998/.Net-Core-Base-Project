@@ -17,7 +17,7 @@
                 @Html.DisplayNameFor(model => model.Code)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.DisplayName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.MainImage)
@@ -54,15 +54,25 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
+    var url = $"{item.Name}/{item.MainImage}";
+
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Code)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.DisplayName)
             </td>
             <td>
-                <img style="width:150px;height:150px;" src="~/images/People/@item.MainImage" />
+                @if (string.IsNullOrEmpty(item.MainImage))
+                {
+                    <img style="width:150px;height:150px;" src="~/images/People/images96.jpg" />
+
+                }
+                else
+                {
+                    <img style="width:150px;height:150px;" src="~/images/Products/@url" />
+                }
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Number)

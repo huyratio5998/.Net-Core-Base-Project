@@ -28,7 +28,7 @@ namespace ManageExport_V2.Controllers
         // GET: Images
         public async Task<IActionResult> Index()
         {
-            var exportContext = _context.Images.Include(i => i.Product);
+            var exportContext = _context.Images.Include(i => i.Product);            
             return View(await exportContext.ToListAsync());
         }
 
@@ -63,17 +63,18 @@ namespace ManageExport_V2.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Url,ProductId,Id,CreatedDate,ModifiedDate")] Image image)
+        public async Task<IActionResult> Create([Bind("Url,ProductId,Id,CreatedDate,ModifiedDate,ImageFile")] Image image)
         {
             if (ModelState.IsValid)
             {
-                await _commonServices.CreateImage(image.ImageFile, image.Url, "/images/Products");
+                var product = _context.Products.Find(image.ProductId);
+                image.Url= await _commonServices.CreateImage(image.ImageFile, image.Url, "/images/Products/"+product.Name);
                 image.CreatedDate = image.ModifiedDate = DateTime.UtcNow;
                 _context.Add(image);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", image.ProductId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "DisplayName", image.Product.DisplayName);
             return View(image);
         }
 
@@ -90,7 +91,8 @@ namespace ManageExport_V2.Controllers
             {
                 return NotFound();
             }
-            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", image.Product.Name);
+            var product = _context.Products.Find(image.ProductId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "DisplayName", product.DisplayName);
             return View(image);
         }
 
@@ -99,7 +101,7 @@ namespace ManageExport_V2.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Url,ProductId,Id,CreatedDate,ModifiedDate")] Image image)
+        public async Task<IActionResult> Edit(int id, [Bind("Url,ProductId,Id,CreatedDate,ModifiedDate,ImageFile")] Image image)
         {
             if (id != image.Id)
             {
@@ -110,7 +112,8 @@ namespace ManageExport_V2.Controllers
             {
                 try
                 {
-                    await _commonServices.EditImage(image.ImageFile, image.Url, "/images/Products");
+                    var product = _context.Products.Find(image.ProductId);
+                    image.Url= await _commonServices.EditImage(image.ImageFile, image.Url, "/images/Products/" + product.Name);
                     image.ModifiedDate = DateTime.Now.ToUniversalTime();
                     _context.Update(image);
                     await _context.SaveChangesAsync();
@@ -128,7 +131,7 @@ namespace ManageExport_V2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", image.Product.Name);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "DisplayName", image.Product.DisplayName);
             return View(image);
         }
 

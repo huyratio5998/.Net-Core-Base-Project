@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ManageExport_V2.Migrations
 {
-    public partial class addmodel : Migration
+    public partial class initialdb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -67,16 +67,17 @@ namespace ManageExport_V2.Migrations
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Age = table.Column<int>(type: "int", nullable: false),
+                    Age = table.Column<int>(type: "int", nullable: true),
                     Gender = table.Column<int>(type: "int", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserType = table.Column<int>(type: "int", nullable: false),
-                    SubsidiaryTotalProduct = table.Column<int>(type: "int", nullable: false),
+                    SubsidiaryTotalProduct = table.Column<int>(type: "int", nullable: true),
                     AgentName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SupplyCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SupplyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Salary = table.Column<double>(type: "float", nullable: false),
+                    Salary = table.Column<double>(type: "float", nullable: true),
+                    Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -86,7 +87,7 @@ namespace ManageExport_V2.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ExportDocumentBill",
+                name: "ExportProductBill",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -94,16 +95,15 @@ namespace ManageExport_V2.Migrations
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TotalMoney = table.Column<double>(type: "float", nullable: false),
                     ExportDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SubsidiaryAgentId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ExportDocumentBill", x => x.Id);
+                    table.PrimaryKey("PK_ExportProductBill", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ExportDocumentBill_User_UserId",
+                        name: "FK_ExportProductBill_User_UserId",
                         column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
@@ -118,6 +118,7 @@ namespace ManageExport_V2.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Number = table.Column<int>(type: "int", nullable: false),
                     MFG = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EXP = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -162,7 +163,7 @@ namespace ManageExport_V2.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ExportDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ExportDocumentBillId = table.Column<int>(type: "int", nullable: false),
+                    ExportProductBillId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -171,9 +172,9 @@ namespace ManageExport_V2.Migrations
                 {
                     table.PrimaryKey("PK_ExportListDetail", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ExportListDetail_ExportDocumentBill_ExportDocumentBillId",
-                        column: x => x.ExportDocumentBillId,
-                        principalTable: "ExportDocumentBill",
+                        name: "FK_ExportListDetail_ExportProductBill_ExportProductBillId",
+                        column: x => x.ExportProductBillId,
+                        principalTable: "ExportProductBill",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -231,19 +232,19 @@ namespace ManageExport_V2.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ExportDocumentBill_UserId",
-                table: "ExportDocumentBill",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ExportListDetail_ExportDocumentBillId",
+                name: "IX_ExportListDetail_ExportProductBillId",
                 table: "ExportListDetail",
-                column: "ExportDocumentBillId");
+                column: "ExportProductBillId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ExportListDetail_ProductId",
                 table: "ExportListDetail",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ExportProductBill_UserId",
+                table: "ExportProductBill",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Image_ProductId",
@@ -283,7 +284,7 @@ namespace ManageExport_V2.Migrations
                 name: "ProductCategory");
 
             migrationBuilder.DropTable(
-                name: "ExportDocumentBill");
+                name: "ExportProductBill");
 
             migrationBuilder.DropTable(
                 name: "Category");
