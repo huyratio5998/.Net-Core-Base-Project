@@ -1,4 +1,6 @@
 using ManageExport_V2.Models;
+using ManageExport_V2.Repositories;
+using ManageExport_V2.Repositories.Interfaces;
 using ManageExport_V2.Services;
 using ManageExport_V2.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -27,9 +29,10 @@ namespace ManageExport_V2
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddRepositories();
+            services.AddServices();
             services.AddControllersWithViews();
             services.AddDbContext<ExportContext>(options =>options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddTransient<ICommonServices, CommonServices>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
