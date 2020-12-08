@@ -11,14 +11,19 @@ namespace ManageExport_V2.Repositories
     {
         private readonly ExportContext _context;
 
-        public UnitOfWork(ExportContext context, IUserRepository users)
+        public UnitOfWork(ExportContext context, IUserRepository users, IProductRepository products)
         {
             _context = context;
             Users = users;
+            Products = products;
         }
 
         public IUserRepository Users { get; }
-                               
+
+        public IProductRepository Products { get; }
+        public IExportListDetailRepository ExportListDetailRepositorys { get; }
+        public IExportProductBillRepository ExportProductBillRepositorys { get; }
+
         public async Task Commit()
         {
             await _context.SaveChangesAsync();

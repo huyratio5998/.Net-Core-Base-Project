@@ -1,4 +1,5 @@
 ﻿using ManageExport_V2.Models;
+using ManageExport_V2.Models.Entity;
 using ManageExport_V2.Services.Interfaces;
 using System;
 
@@ -16,5 +17,6 @@ namespace ManageExport_V2.Services
         {
             return new ExportProductViewModel();
         }
+       
     }
 }

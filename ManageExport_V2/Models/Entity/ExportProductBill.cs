@@ -10,7 +10,8 @@ namespace ManageExport_V2.Models.Entity
     {
         public string Code { get; set; }
         public double TotalMoney { get; set; }
-        public DateTime ExportDate { get; set; }        
+        public DateTime ExportDate { get; set; }
+        public int ExportManagerId { get; set; }
         //useid is subsidiary agent id
         public User User { get; set; }
         public IEnumerable<ExportListDetail> ExportListDetails { get; set; }

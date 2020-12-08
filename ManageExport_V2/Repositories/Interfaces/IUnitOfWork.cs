@@ -8,6 +8,9 @@ namespace ManageExport_V2.Repositories.Interfaces
     public interface IUnitOfWork : IDisposable
     {
         IUserRepository Users { get; }
+        IProductRepository Products { get; }
+        IExportListDetailRepository ExportListDetailRepositorys { get; }
+        IExportProductBillRepository ExportProductBillRepositorys{ get; }
         Task Commit();
     }
 }

@@ -37,16 +37,23 @@ namespace ManageExport_V2.Services
 
         public  async Task CreateSubsidiaryAgent(User user)
         {
+            user.UserType = UserType.SubsidiaryAgent;
             _unitOfWork.Users.Add(user);
             await _unitOfWork.Commit();
         }
         public async Task UpdateSubsidiaryAgent(User user)
         {
            await _unitOfWork.Users.Update(user);
+            await _unitOfWork.Commit();
         }
-        public void DeleteSubsidiaryAgent(int id)
+        public async Task DeleteSubsidiaryAgent(int id)
         {
             _unitOfWork.Users.Delete(id);
+            await _unitOfWork.Commit();
+        }
+        public bool CheckLogin(string username, string password)
+        {
+            return _unitOfWork.Users.CheckLogin(username, password);
         }
     }
 }

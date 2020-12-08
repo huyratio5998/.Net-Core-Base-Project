@@ -13,6 +13,15 @@ namespace ManageExport_V2.Repositories
         public UserRepository(ExportContext context): base(context)
         {
 
-        }      
+        }
+
+        public bool CheckLogin(string username, string password)
+        {
+            if (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password))
+            {
+                return _context.Users.Any(x => x.Username.Equals(username) && x.Password.Equals(password));
+            }
+            return false;
+        }
     }
 }

@@ -13,6 +13,8 @@ namespace ManageExport_V2.Services.Interfaces
         public Task<IQueryable<User>> GetSubsidiaryAgent(string str);
         Task CreateSubsidiaryAgent(User user);
         Task UpdateSubsidiaryAgent(User user);
-        void DeleteSubsidiaryAgent(int id);
+        Task DeleteSubsidiaryAgent(int id);
+        bool CheckLogin(string username, string password);
+
     }
 }
