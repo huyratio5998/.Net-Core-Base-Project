@@ -13,6 +13,7 @@ namespace ManageExport_V2.Models.Entity
         public DateTime ExportDate { get; set; }
         public int ExportManagerId { get; set; }
         //useid is subsidiary agent id
+        public int UserId { get; set; }
         public User User { get; set; }
         public IEnumerable<ExportListDetail> ExportListDetails { get; set; }
     }

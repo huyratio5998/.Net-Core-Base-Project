@@ -34,6 +34,11 @@ namespace ManageExport_V2.Models.Entity
 
         [NotMapped]
         public IFormFile ImageFile { get; set; }
+        [NotMapped]
+        public double ExportPrice { get; set; }
+        [NotMapped]
+        public int ExportNumber{ get; set; }
+
 
     }
 }

@@ -10,25 +10,8 @@ namespace ManageExport_V2.Repositories
 {
     public class ExportProductBillRepository : BaseRepository<ExportProductBill>, IExportProductBillRepository
     {
-        protected ExportProductBillRepository(ExportContext context) : base(context)
+        public ExportProductBillRepository(ExportContext context) : base(context)
         {
-        }
-        public bool AddExportProduct(ExportProductViewModel exportProductViewModel)
-        {
-            try
-            {
-                ExportProductBill exportProductBill = new ExportProductBill();
-
-                foreach (var item in exportProductViewModel.ExportProducts)
-                {
-
-                }
-                return _unitOfWork..GetSingleById(id);
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
+        }       
     }
 }

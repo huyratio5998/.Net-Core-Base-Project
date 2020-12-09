@@ -10,7 +10,7 @@ namespace ManageExport_V2.Repositories
 {
     public class ExportListDetailRepository : BaseRepository<ExportListDetail>, IExportListDetailRepository
     {
-        protected ExportListDetailRepository(ExportContext context) : base(context)
+        public ExportListDetailRepository(ExportContext context) : base(context)
         {
         }
     }
