@@ -16,6 +16,17 @@ namespace ManageExport_V2.Services
         {
             _unitOfWork = unitOfWork;
         }
+        public Task<User> GetSubsidiaryAgentById(int id )
+        {
+            try
+            {
+                return _unitOfWork.Users.GetSingleById(id);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
         public Task<IQueryable<User>> GetSubsidiaryAgent(string str)
         {
             try

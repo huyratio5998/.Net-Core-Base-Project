@@ -9,20 +9,32 @@ namespace ManageExport_V2.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly ExportContext _context;
-        public IUserRepository Users { get; }
-
-        public IProductRepository Products { get; }
-        public IExportListDetailRepository ExportListDetailRepositorys { get; }
-        public IExportProductBillRepository ExportProductBillRepositorys { get; }
-        public UnitOfWork(ExportContext context, IUserRepository users, IProductRepository products, IExportListDetailRepository exportListDetails, IExportProductBillRepository exportProductBill)
+        private ExportContext _context;
+        private IUserRepository _userRepository;
+        private IProductRepository _productRepository;
+        private IExportListDetailRepository _exportListDetailRepository;
+        private IExportProductBillRepository _exportProductBillRepository;
+        public ExportContext ExportContext
         {
-            _context = context;
-            Users = users;
-            Products = products;
-            ExportListDetailRepositorys = exportListDetails;
-            ExportProductBillRepositorys = exportProductBill;
+            get { return _context ?? (_context = new ExportContext()); }
+        }        
+
+        public IUserRepository Users
+        {
+            get { return _userRepository ?? (_userRepository = new UserRepository(_context)); }
         }
+        public IProductRepository Products
+        {
+            get { return _productRepository ?? (_productRepository = new ProductRepository(_context)); }
+        }
+        public IExportListDetailRepository ExportListDetailRepositorys
+        {
+            get { return _exportListDetailRepository ?? (_exportListDetailRepository = new ExportListDetailRepository(_context)); }
+        }
+        public IExportProductBillRepository ExportProductBillRepositorys
+        {
+            get { return _exportProductBillRepository ?? (_exportProductBillRepository = new ExportProductBillRepository(_context)); }
+        }         
         public async Task Commit()
         {
             await _context.SaveChangesAsync();

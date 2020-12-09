@@ -22,7 +22,17 @@ namespace ManageExport_V2.Services
         {
             try
             {
-                ExportProductBill exportProductBill = new ExportProductBill();                
+                ExportProductBill exportProductBill = new ExportProductBill();
+                // add exportProductBill
+                exportProductBill.TotalMoney = exportProductViewModel.TotalMoney;
+                exportProductBill.ExportDate = DateTime.UtcNow;
+                exportProductBill.ExportManagerId = exportProductViewModel.ExportManager.Id;
+                exportProductBill.UserId = exportProductViewModel.SubsidiaryAgent.Id;
+                exportProductBill.Code = exportProductViewModel.Code;
+                exportProductBill.CreatedDate = DateTime.UtcNow;
+                exportProductBill.ModifiedDate = DateTime.UtcNow;
+                _unitOfWork.ExportProductBillRepositorys.Add(exportProductBill);
+                _unitOfWork.Commit();
                 foreach (var item in exportProductViewModel.ExportProducts)
                 {
                     // add exportProductBillDetail
@@ -33,16 +43,7 @@ namespace ManageExport_V2.Services
                     product.ModifiedDate = DateTime.UtcNow;
                     product.ExportDate = DateTime.UtcNow;                                        
                     _unitOfWork.ExportListDetailRepositorys.Add(product);                                 
-                }
-                // add exportProductBill
-                exportProductBill.TotalMoney = exportProductViewModel.TotalMoney;
-                exportProductBill.ExportDate = DateTime.UtcNow;
-                exportProductBill.ExportManagerId = exportProductViewModel.ExportManager.Id;
-                exportProductBill.UserId = exportProductViewModel.SubsidiaryAgent.Id;
-                exportProductBill.Code = exportProductViewModel.Code;
-                exportProductBill.CreatedDate = DateTime.UtcNow;
-                exportProductBill.ModifiedDate = DateTime.UtcNow;
-                _unitOfWork.ExportProductBillRepositorys.Add(exportProductBill);
+                }               
                 _unitOfWork.Commit();
                 return true;
             }

@@ -11,8 +11,10 @@ namespace ManageExport_V2.Repositories
     {
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
-            services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IExportListDetailRepository, ExportListDetailRepository>();
+            services.AddTransient<IExportProductBillRepository, ExportProductBillRepository>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();            
             return services;
         }
 

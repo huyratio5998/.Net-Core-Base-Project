@@ -13,6 +13,10 @@ namespace ManageExport_V2.Services
         {
             services.AddTransient<ICommonServices, CommonServices>();
             services.AddTransient<IUserServices, UserServices>();
+            services.AddTransient<IExportProductServices, ExportProductServices>();
+            services.AddTransient<IProductServices, ProductServices>();
+            services.AddTransient<IStockServices, StockServices>();
+
             return services;
         }
     }
