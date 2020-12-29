@@ -202,7 +202,7 @@ namespace ManageExport_V2.Controllers
                 //Insert record
                 user.CreatedDate = user.ModifiedDate = DateTime.UtcNow;
                 await _userServices.CreateSubsidiaryAgent(user);                
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("SubsidiaryAgentIndex");
             }
             return View(user);
         }
@@ -242,7 +242,7 @@ namespace ManageExport_V2.Controllers
                 {
                     throw e;
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(SubsidiaryAgentIndex));
             }
             return View(user);
         }
@@ -267,7 +267,7 @@ namespace ManageExport_V2.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _userServices.DeleteSubsidiaryAgent(id);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(SubsidiaryAgentIndex));
         }      
         #endregion
     }
