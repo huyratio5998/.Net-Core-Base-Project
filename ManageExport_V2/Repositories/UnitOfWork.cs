@@ -9,14 +9,18 @@ namespace ManageExport_V2.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private ExportContext _context;
+        private ExportContext _context;        
         private IUserRepository _userRepository;
         private IProductRepository _productRepository;
         private IExportListDetailRepository _exportListDetailRepository;
         private IExportProductBillRepository _exportProductBillRepository;
+        public UnitOfWork(ExportContext context)
+        {
+            _context = context;
+        }
         public ExportContext ExportContext
         {
-            get { return _context ?? (_context = new ExportContext()); }
+            get { return _context; }
         }        
 
         public IUserRepository Users

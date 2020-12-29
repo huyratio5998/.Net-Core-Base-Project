@@ -8,11 +8,7 @@ using System.Threading.Tasks;
 namespace ManageExport_V2.Models
 {
     public class ExportContext : DbContext
-    {
-        public ExportContext()
-        {
-
-        }
+    {        
         public ExportContext(DbContextOptions<ExportContext> options)
            : base(options)
         {
