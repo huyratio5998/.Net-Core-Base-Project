@@ -1,0 +1,87 @@
+﻿@model IEnumerable<ManageExport_V2.Models.Entity.User>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";    
+}
+
+<h1>Subsidiary Agent</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-info">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                SA Code
+            </th>
+            <th>
+                SA Name
+            </th>
+            <th>
+                Address
+            </th>
+            <th>
+                City
+            </th>
+
+            <th>
+                Host Name
+            </th>
+            <th>
+                Image
+            </th>
+            <th>
+                Phone
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Expire Contract Date
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+    string hostName = $"{item.FirstName} {item.LastName}";
+    var expireContractDate = item.ExpireContractDate.ToLocalTime();
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.AgentCode)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.AgentName)</a> 
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City)
+            </td>
+            <td>
+                @hostName
+            </td>
+            <td>
+                <img style="width:150px;height:150px;" src="~/images/People/@item.Avatar" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @expireContractDate
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |               
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

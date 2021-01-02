@@ -14,7 +14,10 @@ namespace ManageExport_V2.Repositories
         {
 
         }
-
+        public int getNewId()
+        {
+            return _context.Users.OrderByDescending(x => x.Id).FirstOrDefault().Id;
+        }
         public bool CheckLogin(string username, string password)
         {
             if (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password))
@@ -23,5 +26,7 @@ namespace ManageExport_V2.Repositories
             }
             return false;
         }
+
+           
     }
 }

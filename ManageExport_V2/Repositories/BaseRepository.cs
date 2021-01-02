@@ -41,7 +41,7 @@ namespace ManageExport_V2.Repositories
         {
             var entity = _dbSet.Find(id);
             _dbSet.Remove(entity);
-        }
+        }        
 
         public virtual async Task DeleteMulti(Expression<Func<T, bool>> where)
         {

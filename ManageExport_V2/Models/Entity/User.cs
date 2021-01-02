@@ -20,14 +20,17 @@ namespace ManageExport_V2.Models.Entity
         public Gender Gender { get; set; }
         public string Address { get; set; }
         public string City { get; set; }
-        public UserType UserType { get; set; }
-        public int? SubsidiaryTotalProduct { get; set; }
-        public string AgentName { get; set; }
+        public UserType UserType { get; set; }               
         public string SupplyCode { get; set; }
         public string SupplyName { get; set; }
         public double? Salary { get; set; }
         public string Avatar { get; set; }
-
+        #region Subsidiary Agent
+        public string AgentName { get; set; }
+        public string AgentCode { get; set; }
+        public int? SubsidiaryTotalProduct { get; set; }
+        public DateTime ExpireContractDate { get; set; }        
+        #endregion
         public IEnumerable<Product> Products { get; set; }
         public IEnumerable<ExportProductBill> ExportDocumentBills { get; set; }
 

@@ -16,6 +16,7 @@ namespace ManageExport_V2.Services.Interfaces
         Task DeleteSubsidiaryAgent(int id);
         bool CheckLogin(string username, string password);
         Task<User> GetSubsidiaryAgentById(int id);
-
+        Task DeleteVirtual(int id);
+        
     }
 }

@@ -15,5 +15,6 @@ namespace ManageExport_V2.Models.Entity
         }        
         public DateTime CreatedDate { get; set; }
         public DateTime ModifiedDate { get; set; }
+        public bool IsActive { get; set; }
     }
 }

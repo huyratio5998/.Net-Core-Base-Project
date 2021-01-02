@@ -20,7 +20,8 @@ namespace ManageExport_V2.Services
         {
             try
             {
-                return _unitOfWork.Users.GetSingleById(id);
+                Task<User> user= _unitOfWork.Users.GetSingleById(id);                
+                return user;
             }
             catch (Exception e)
             {
@@ -43,18 +44,27 @@ namespace ManageExport_V2.Services
         }
         public async Task<IQueryable<User>> GetSubsidiaryAgents()
         {
-            return await _unitOfWork.Users.GetMulti(x => x.UserType.Equals(UserType.SubsidiaryAgent));
+            return await _unitOfWork.Users.GetMulti(x => x.UserType.Equals(UserType.SubsidiaryAgent)&&x.IsActive);
         }
 
         public  async Task CreateSubsidiaryAgent(User user)
         {
-            user.UserType = UserType.SubsidiaryAgent;
+            //Insert record     
+            int NewestID = _unitOfWork.Users.getNewId().Equals(null) ? 0 : _unitOfWork.Users.getNewId();
+            user.AgentCode = $"SA_{NewestID + 1}";
+            user.CreatedDate = user.ModifiedDate = DateTime.UtcNow;
+            user.ExpireContractDate=user.ExpireContractDate.ToUniversalTime();
+            user.UserType = UserType.SubsidiaryAgent;            
+            user.IsActive = true;
             _unitOfWork.Users.Add(user);
             await _unitOfWork.Commit();
+            
         }
         public async Task UpdateSubsidiaryAgent(User user)
         {
-           await _unitOfWork.Users.Update(user);
+            user.ModifiedDate = DateTime.UtcNow;
+            user.ExpireContractDate = user.ExpireContractDate.ToUniversalTime();
+            await _unitOfWork.Users.Update(user);
             await _unitOfWork.Commit();
         }
         public async Task DeleteSubsidiaryAgent(int id)
@@ -66,5 +76,14 @@ namespace ManageExport_V2.Services
         {
             return _unitOfWork.Users.CheckLogin(username, password);
         }
+
+        public async Task DeleteVirtual(int id)
+        {
+           var entity = await _unitOfWork.Users.GetSingleById(id);
+            entity.IsActive = false;
+            entity.ModifiedDate = DateTime.UtcNow;
+            await _unitOfWork.Users.Update(entity);
+            await _unitOfWork.Commit();
+        }        
     }
 }
