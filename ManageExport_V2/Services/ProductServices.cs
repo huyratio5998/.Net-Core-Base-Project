@@ -37,6 +37,58 @@ namespace ManageExport_V2.Services
                 throw e;
             }
         }
-        
+
+        public Task<IQueryable<Product>> GetProducts()
+        {
+            return _unitOfWork.Products.GetMulti(x => x.IsActive);
+        }
+
+        public async Task CreateProduct(Product user)
+        {
+            try
+            {
+                _unitOfWork.Products.Add(user);
+                await _unitOfWork.Commit();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public async Task UpdateProduct(Product user)
+        {
+            try
+            {
+                _unitOfWork.Products.Add(user);
+                await _unitOfWork.Commit();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public async Task DeleteProductById(int id)
+        {
+            try
+            {
+                _unitOfWork.Products.Delete(id);
+                await _unitOfWork.Commit();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public async Task DeleteVirtual(int id)
+        {
+            var entity = await _unitOfWork.Products.GetSingleById(id);
+            entity.IsActive = false;
+            entity.ModifiedDate = DateTime.UtcNow;
+            await _unitOfWork.Products.Update(entity);
+            await _unitOfWork.Commit();
+        }       
     }
 }

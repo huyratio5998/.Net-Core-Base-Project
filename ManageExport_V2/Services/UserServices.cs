@@ -16,11 +16,12 @@ namespace ManageExport_V2.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public Task<User> GetSubsidiaryAgentById(int id )
+        #region SubsidiaryAgent
+        public Task<User> GetSubsidiaryAgentById(int id)
         {
             try
             {
-                Task<User> user= _unitOfWork.Users.GetSingleById(id);                
+                Task<User> user = _unitOfWork.Users.GetSingleById(id);
                 return user;
             }
             catch (Exception e)
@@ -32,33 +33,33 @@ namespace ManageExport_V2.Services
         {
             try
             {
-                return _unitOfWork.Users.GetMulti(x => x.UserType.Equals(UserType.SubsidiaryAgent) && (x.Email.Contains(str) || 
+                return _unitOfWork.Users.GetMulti(x => x.UserType.Equals(UserType.SubsidiaryAgent) && (x.Email.Contains(str) ||
                                                                    x.AgentName.Contains(str) ||
                                                                    x.Phone.Contains(str) || x.FirstName.Contains(str) ||
                                                                    x.LastName.Contains(str)));
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw e;
-            }            
+            }
         }
         public async Task<IQueryable<User>> GetSubsidiaryAgents()
         {
-            return await _unitOfWork.Users.GetMulti(x => x.UserType.Equals(UserType.SubsidiaryAgent)&&x.IsActive);
+            return await _unitOfWork.Users.GetMulti(x => x.UserType.Equals(UserType.SubsidiaryAgent) && x.IsActive);
         }
 
-        public  async Task CreateSubsidiaryAgent(User user)
+        public async Task CreateSubsidiaryAgent(User user)
         {
             //Insert record     
             int NewestID = _unitOfWork.Users.getNewId().Equals(null) ? 0 : _unitOfWork.Users.getNewId();
             user.AgentCode = $"SA_{NewestID + 1}";
             user.CreatedDate = user.ModifiedDate = DateTime.UtcNow;
-            user.ExpireContractDate=user.ExpireContractDate.ToUniversalTime();
-            user.UserType = UserType.SubsidiaryAgent;            
+            user.ExpireContractDate = user.ExpireContractDate.ToUniversalTime();
+            user.UserType = UserType.SubsidiaryAgent;
             user.IsActive = true;
             _unitOfWork.Users.Add(user);
             await _unitOfWork.Commit();
-            
+
         }
         public async Task UpdateSubsidiaryAgent(User user)
         {
@@ -71,19 +72,34 @@ namespace ManageExport_V2.Services
         {
             _unitOfWork.Users.Delete(id);
             await _unitOfWork.Commit();
+
         }
+        public async Task DeleteVirtual(int id)
+        {
+            var entity = await _unitOfWork.Users.GetSingleById(id);
+            entity.IsActive = false;
+            entity.ModifiedDate = DateTime.UtcNow;
+            await _unitOfWork.Users.Update(entity);
+            await _unitOfWork.Commit();
+        }
+        #endregion
+
         public bool CheckLogin(string username, string password)
         {
             return _unitOfWork.Users.CheckLogin(username, password);
         }
 
-        public async Task DeleteVirtual(int id)
+        public Task<IEnumerable<User>> GetSupply()
         {
-           var entity = await _unitOfWork.Users.GetSingleById(id);
-            entity.IsActive = false;
-            entity.ModifiedDate = DateTime.UtcNow;
-            await _unitOfWork.Users.Update(entity);
-            await _unitOfWork.Commit();
-        }        
+            try
+            {
+                var users= _unitOfWork.Users.GetMulti(x => x.UserType.Equals(UserType.Supply) && x.IsActive);
+                return (Task<IEnumerable<User>>)users.Result;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
     }
 }

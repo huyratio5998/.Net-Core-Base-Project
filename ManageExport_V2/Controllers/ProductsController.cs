@@ -15,19 +15,28 @@ namespace ManageExport_V2.Controllers
     {
         private readonly ExportContext _context;
         private ICommonServices _commonServices;
+        private IProductServices _productServices;
+        private IUserServices _userServices;
 
-
-        public ProductsController(ExportContext context,ICommonServices commonServices)
+        public ProductsController(ExportContext context,ICommonServices commonServices, IProductServices productServices)
         {
             _context = context;
             _commonServices = commonServices;
+            _productServices = productServices;
+        }
+
+        public ProductsController(ICommonServices commonServices, IProductServices productServices, IUserServices userServices)
+        {
+            _commonServices = commonServices;
+            _productServices = productServices;
+            _userServices = userServices;
         }
 
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            var exportContext = _context.Products.Include(p => p.Brand).Include(p => p.Stock).Include(p => p.User);
-            return View(await exportContext.ToListAsync());
+            var products =await _productServices.GetProducts();            
+            return View(products);
         }
 
         // GET: Products/Details/5
@@ -38,11 +47,7 @@ namespace ManageExport_V2.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
-                .Include(p => p.Brand)
-                .Include(p => p.Stock)
-                .Include(p => p.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var product = _productServices.GetProductById((int)id);
             if (product == null)
             {
                 return NotFound();
@@ -56,7 +61,7 @@ namespace ManageExport_V2.Controllers
         {
             ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "ShortName");
             ViewData["StockId"] = new SelectList(_context.Stocks, "Id", "Name");
-            var lstSupplies = _context.Users.Where(x => x.UserType.Equals(UserType.Supply));
+            var lstSupplies = _userServices.GetSupply();
             ViewData["SupplyId"] = new SelectList(lstSupplies, "Id", "SupplyName");
             return View();
         }
