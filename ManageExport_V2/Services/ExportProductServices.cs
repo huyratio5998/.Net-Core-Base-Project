@@ -3,6 +3,9 @@ using ManageExport_V2.Models.Entity;
 using ManageExport_V2.Repositories.Interfaces;
 using ManageExport_V2.Services.Interfaces;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ManageExport_V2.Services
 {
@@ -14,9 +17,9 @@ namespace ManageExport_V2.Services
             _unitOfWork = unitOfWork;
         }
 
-        public ExportProductViewModel ExportProduct()
+        public Task<IQueryable<ExportProductBill>> ExportProduct(string[] includes = null)
         {
-            return new ExportProductViewModel();
+           return  _unitOfWork.ExportProductBillRepositorys.GetAll(includes);            
         }
         public bool AddExportProduct(ExportProductViewModel exportProductViewModel)
         {
@@ -28,7 +31,8 @@ namespace ManageExport_V2.Services
                 exportProductBill.ExportDate = DateTime.UtcNow;
                 exportProductBill.ExportManagerId = exportProductViewModel.ExportManager.Id;
                 exportProductBill.UserId = exportProductViewModel.SubsidiaryAgent.Id;
-                exportProductBill.Code = exportProductViewModel.Code;
+                int NewestID = _unitOfWork.ExportProductBillRepositorys.getNewId().Equals(null) ? 0 : (int)_unitOfWork.ExportProductBillRepositorys.getNewId();
+                exportProductBill.Code = $"EPB_{NewestID + 1}";                
                 exportProductBill.CreatedDate = DateTime.UtcNow;
                 exportProductBill.ModifiedDate = DateTime.UtcNow;
                 _unitOfWork.ExportProductBillRepositorys.Add(exportProductBill);

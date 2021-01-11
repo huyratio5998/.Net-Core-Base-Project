@@ -15,6 +15,9 @@ namespace ManageExport_V2.Repositories
             services.AddTransient<IUserRepository, UserRepository>();            
             services.AddTransient<IExportListDetailRepository, ExportListDetailRepository>();
             services.AddTransient<IExportProductBillRepository, ExportProductBillRepository>();
+            services.AddTransient<IImageRepository, ImageRepository>();
+            services.AddTransient<IStockRepository, StockRepository>();
+            services.AddTransient<IBrandRepository, BrandRepository>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             return services;
         }

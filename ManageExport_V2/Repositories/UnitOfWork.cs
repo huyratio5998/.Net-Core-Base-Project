@@ -14,6 +14,9 @@ namespace ManageExport_V2.Repositories
         private IProductRepository _productRepository;
         private IExportListDetailRepository _exportListDetailRepository;
         private IExportProductBillRepository _exportProductBillRepository;
+        private IStockRepository _stockRepository;
+        private IImageRepository _imageRepository;
+        private IBrandRepository _brandRepository;
         public UnitOfWork(ExportContext context)
         {
             _context = context;
@@ -38,7 +41,21 @@ namespace ManageExport_V2.Repositories
         public IExportProductBillRepository ExportProductBillRepositorys
         {
             get { return _exportProductBillRepository ?? (_exportProductBillRepository = new ExportProductBillRepository(_context)); }
-        }         
+        }
+        public IStockRepository StockRepository
+        {
+            get { return _stockRepository ?? (_stockRepository = new StockRepository(_context)); }
+        }
+        public IImageRepository ImageRepository
+        {
+            get { return _imageRepository ?? (_imageRepository = new ImageRepository(_context)); }
+        }
+        public IBrandRepository BrandRepository
+        {
+            get { return _brandRepository ?? (_brandRepository = new BrandRepository(_context)); }
+        }
+
+
         public async Task Commit()
         {
             await _context.SaveChangesAsync();

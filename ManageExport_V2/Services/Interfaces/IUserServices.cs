@@ -18,7 +18,7 @@ namespace ManageExport_V2.Services.Interfaces
         Task<User> GetSubsidiaryAgentById(int id);
         Task DeleteVirtual(int id);
         // Supply 
-        Task<IEnumerable<User>> GetSupply();
+        Task<IQueryable<User>> GetSupply();
 
     }
 }

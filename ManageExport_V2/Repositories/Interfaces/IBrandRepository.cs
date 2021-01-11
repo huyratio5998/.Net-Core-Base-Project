@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace ManageExport_V2.Repositories.Interfaces
 {
-    public interface IExportProductBillRepository : IBaseRepository<ExportProductBill>
+    public interface IBrandRepository : IBaseRepository<Brand>
     {
-        int? getNewId();
     }
 }

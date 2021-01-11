@@ -11,6 +11,9 @@ namespace ManageExport_V2.Repositories.Interfaces
         IProductRepository Products { get; }
         IExportListDetailRepository ExportListDetailRepositorys { get; }
         IExportProductBillRepository ExportProductBillRepositorys{ get; }
+        IStockRepository StockRepository { get; }
+        IImageRepository ImageRepository { get; }
+        IBrandRepository BrandRepository { get; }
         Task Commit();
     }
 }

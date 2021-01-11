@@ -12,10 +12,14 @@ namespace ManageExport_V2.Services
     public class ProductServices :IProductServices
     {
         private IUnitOfWork _unitOfWork;
-        public ProductServices(IUnitOfWork unitOfWork)
+        private ICommonServices _commonServices;
+
+        public ProductServices(IUnitOfWork unitOfWork, ICommonServices commonServices)
         {
             _unitOfWork = unitOfWork;
+            _commonServices = commonServices;
         }
+
         public Task<IQueryable<Product>> GetProducts(string str)
         {
             try
@@ -27,27 +31,41 @@ namespace ManageExport_V2.Services
                 throw e;
             }
         }
-        public Task<Product> GetProductById(int id)
+        public async Task<Product> GetProductById(int id,string[] includes=null)
         {
             try
             {
-                return _unitOfWork.Products.GetSingleById(id);
-            }catch(Exception e)
+                var product= await _unitOfWork.Products.GetSingleByCondition(x => x.Id == id, includes);
+                product.MFG = product.MFG.ToLocalTime();
+                product.EXP = product.EXP.ToLocalTime();
+                product.RecieveDate = product.RecieveDate.ToLocalTime();
+                product.CreatedDate = product.CreatedDate.ToLocalTime();
+                product.ModifiedDate = product.ModifiedDate.ToLocalTime();
+                return product;
+            }
+            catch(Exception e)
             {
                 throw e;
             }
-        }
-
-        public Task<IQueryable<Product>> GetProducts()
+        }      
+        public Task<IQueryable<Product>> GetProducts(string[] include=null)
         {
-            return _unitOfWork.Products.GetMulti(x => x.IsActive);
+            return _unitOfWork.Products.GetMulti(x => x.IsActive,include);                                 
         }
 
-        public async Task CreateProduct(Product user)
+        public async Task CreateProduct(Product product)
         {
             try
             {
-                _unitOfWork.Products.Add(user);
+                int NewestID = _unitOfWork.Products.getNewId().Equals(null) ? 0 : (int)_unitOfWork.Products.getNewId();
+                product.Code = $"P_{NewestID + 1}";
+                product.MainImage = await _commonServices.CreateImage(product.ImageFile, product.MainImage, "/images/Products/" + product.Name);
+                product.MFG = product.MFG.ToUniversalTime();
+                product.EXP = product.EXP.ToUniversalTime();
+                product.RecieveDate = product.RecieveDate.ToUniversalTime();
+                product.CreatedDate = product.ModifiedDate = DateTime.UtcNow;
+                product.IsActive = true;
+                _unitOfWork.Products.Add(product);
                 await _unitOfWork.Commit();
             }
             catch (Exception e)
@@ -56,11 +74,16 @@ namespace ManageExport_V2.Services
             }
         }
 
-        public async Task UpdateProduct(Product user)
+        public async Task UpdateProduct(Product product)
         {
             try
             {
-                _unitOfWork.Products.Add(user);
+                product.MainImage = await _commonServices.EditImage(product.ImageFile, product.MainImage, "/images/Products/" + product.Name);
+                product.MFG = product.MFG.ToUniversalTime();
+                product.EXP = product.EXP.ToUniversalTime();
+                product.RecieveDate = product.RecieveDate.ToUniversalTime();
+                product.ModifiedDate = DateTime.UtcNow;
+                await _unitOfWork.Products.Update(product);
                 await _unitOfWork.Commit();
             }
             catch (Exception e)
@@ -89,6 +112,6 @@ namespace ManageExport_V2.Services
             entity.ModifiedDate = DateTime.UtcNow;
             await _unitOfWork.Products.Update(entity);
             await _unitOfWork.Commit();
-        }       
+        }         
     }
 }

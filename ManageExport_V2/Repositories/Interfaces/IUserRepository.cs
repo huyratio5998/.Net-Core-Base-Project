@@ -9,7 +9,7 @@ namespace ManageExport_V2.Repositories.Interfaces
     public interface IUserRepository : IBaseRepository<User>
     {
         bool CheckLogin(string username, string password);
-        int getNewId();        
+        int? getNewId();        
        
     }
 }

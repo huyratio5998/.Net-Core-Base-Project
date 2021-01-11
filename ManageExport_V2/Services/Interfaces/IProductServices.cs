@@ -9,12 +9,12 @@ namespace ManageExport_V2.Services.Interfaces
 {
     public interface IProductServices
     {
-        Task<IQueryable<Product>> GetProducts();
+        Task<IQueryable<Product>> GetProducts(string[] include = null);
         Task<IQueryable<Product>> GetProducts(string str);
-        Task<Product> GetProductById(int id);
+        Task<Product> GetProductById(int id, string[] includes = null);
         Task CreateProduct(Product product);
         Task UpdateProduct(Product product);
         Task DeleteProductById(int id);
-        Task DeleteVirtual(int id);
+        Task DeleteVirtual(int id);        
     }
 }

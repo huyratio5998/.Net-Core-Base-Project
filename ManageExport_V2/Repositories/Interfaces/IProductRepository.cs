@@ -8,5 +8,6 @@ namespace ManageExport_V2.Repositories.Interfaces
 {
     public interface IProductRepository : IBaseRepository<Product>
     {
+        int? getNewId();
     }
 }

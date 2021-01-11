@@ -8,34 +8,35 @@ using Microsoft.EntityFrameworkCore;
 using ManageExport_V2.Models;
 using ManageExport_V2.Models.Entity;
 using ManageExport_V2.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
+using ManageExport_V2.Services;
 
 namespace ManageExport_V2.Controllers
 {
     public class ProductsController : Controller
-    {
-        private readonly ExportContext _context;
-        private ICommonServices _commonServices;
+    {        
         private IProductServices _productServices;
-        private IUserServices _userServices;
-
-        public ProductsController(ExportContext context,ICommonServices commonServices, IProductServices productServices)
-        {
-            _context = context;
-            _commonServices = commonServices;
-            _productServices = productServices;
-        }
-
-        public ProductsController(ICommonServices commonServices, IProductServices productServices, IUserServices userServices)
-        {
-            _commonServices = commonServices;
+        private IUserServices _userServices;     
+        private IImageServices _imageServices;     
+        private IBrandServices _brandServices;     
+        private IStockServices _stockServices;
+        private IExportProductServices _exportProductServices;        
+        public ProductsController(IProductServices productServices, IUserServices userServices, IImageServices imageServices, IBrandServices brandServices, IStockServices stockServices,IExportProductServices exportProductServices)
+        {            
             _productServices = productServices;
             _userServices = userServices;
+            _imageServices = imageServices;
+            _brandServices = brandServices;
+            _stockServices = stockServices;
+            _exportProductServices = exportProductServices;
         }
-
+        #region Product
         // GET: Products
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string SubAgentId,string SubAgentName)
         {
-            var products =await _productServices.GetProducts();            
+            ViewBag.SAID = SubAgentId;
+            ViewBag.SAName = SubAgentName;
+            var products = await _productServices.GetProducts(new string[] { "User", "Stock", "Brand" });
             return View(products);
         }
 
@@ -47,22 +48,20 @@ namespace ManageExport_V2.Controllers
                 return NotFound();
             }
 
-            var product = _productServices.GetProductById((int)id);
+            var product = await _productServices.GetProductById((int)id, new string[] { "User", "Stock", "Brand" });
             if (product == null)
             {
                 return NotFound();
             }
-
             return View(product);
         }
 
         // GET: Products/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "ShortName");
-            ViewData["StockId"] = new SelectList(_context.Stocks, "Id", "Name");
-            var lstSupplies = _userServices.GetSupply();
-            ViewData["SupplyId"] = new SelectList(lstSupplies, "Id", "SupplyName");
+            ViewData["BrandId"] = new SelectList(await _brandServices.GetBrand(), "Id", "ShortName");
+            ViewData["StockId"] = new SelectList(await _stockServices.GetStock(), "Id", "Name");
+            ViewData["SupplyId"] = new SelectList(await _userServices.GetSupply(), "Id", "SupplyName");
             return View();
         }
 
@@ -74,17 +73,13 @@ namespace ManageExport_V2.Controllers
         public async Task<IActionResult> Create([Bind("Code,Name,Number,MFG,EXP,Country,Description,Price,MainImage,RecieveDate,SupplyId,StockId,BrandId,Id,CreatedDate,ModifiedDate,ImageFile,DisplayName")] Product product)
         {
             if (ModelState.IsValid)
-            {                
-                product.MainImage = await _commonServices.CreateImage(product.ImageFile, product.MainImage, "/images/Products/"+ product.Name);
-                product.CreatedDate = product.ModifiedDate = DateTime.UtcNow;
-                _context.Add(product);
-                await _context.SaveChangesAsync();
+            {
+                await _productServices.CreateProduct(product);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "ShortName", product.Brand.ShortName);
-            ViewData["StockId"] = new SelectList(_context.Stocks, "Id", "Name", product.Stock.Name);
-            var lstSupplies = _context.Users.Where(x => x.UserType.Equals(UserType.Supply));
-            ViewData["SupplyId"] = new SelectList(lstSupplies, "Id", "SupplyName", product.User.SupplyName);
+            ViewData["BrandId"] = new SelectList(await _brandServices.GetBrand(), "Id", "ShortName", product.Brand.ShortName);
+            ViewData["StockId"] = new SelectList(await _stockServices.GetStock(), "Id", "Name", product.Stock.Name);
+            ViewData["SupplyId"] = new SelectList(await _userServices.GetSupply(), "Id", "SupplyName", product.User.SupplyName);
             return View(product);
         }
 
@@ -96,19 +91,19 @@ namespace ManageExport_V2.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products.FindAsync(id);
+            var product = await _productServices.GetProductById((int)id, new string[] { "User", "Stock", "Brand" });
             if (product == null)
             {
                 return NotFound();
-            }            
-            var lstSupplies = _context.Users.Where(x => x.UserType.Equals(UserType.Supply));            
-            var currentBrand = _context.Brands.FirstOrDefault(x => x.Id == product.BrandId).ShortName;
-            var currentStock = _context.Stocks.FirstOrDefault(x => x.Id == product.StockId).Name;
+            }
+            var lstSupplies = await _userServices.GetSupply();
+            var currentBrand = await _brandServices.GetBrandById(product.BrandId);
+            var currentStock = await _stockServices.GetStockById(product.StockId);
             var currentSupply = lstSupplies.FirstOrDefault(x => x.Id == product.SupplyId).SupplyName;
 
-            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "ShortName", currentBrand);
-            ViewData["StockId"] = new SelectList(_context.Stocks, "Id", "Name", currentStock);
-            ViewData["SupplyId"] = new SelectList(lstSupplies, "Id", "SupplyName", currentSupply);
+            ViewData["BrandId"] = new SelectList(await _brandServices.GetBrand(), "Id", "ShortName", product.Brand.ShortName);
+            ViewData["StockId"] = new SelectList(await _stockServices.GetStock(), "Id", "Name", product.Stock.Name);
+            ViewData["SupplyId"] = new SelectList(lstSupplies, "Id", "SupplyName", product.User.SupplyName);
             return View(product);
         }
 
@@ -117,7 +112,7 @@ namespace ManageExport_V2.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Code,Name,Number,MFG,EXP,Country,Description,Price,MainImage,RecieveDate,SupplyId,StockId,BrandId,Id,CreatedDate,ModifiedDate,ImageFile,DisplayName")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Code,Name,Number,MFG,EXP,Country,Description,Price,MainImage,RecieveDate,SupplyId,StockId,BrandId,Id,CreatedDate,ModifiedDate,ImageFile,DisplayName,IsActive")] Product product)
         {
             if (id != product.Id)
             {
@@ -128,10 +123,7 @@ namespace ManageExport_V2.Controllers
             {
                 try
                 {
-                    product.MainImage= await _commonServices.EditImage(product.ImageFile, product.MainImage, "/images/Products/" + product.Name);
-                    product.ModifiedDate = DateTime.UtcNow;
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
+                    await _productServices.UpdateProduct(product);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -146,9 +138,9 @@ namespace ManageExport_V2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "ShortName", product.Brand.ShortName);
-            ViewData["StockId"] = new SelectList(_context.Stocks, "Id", "Name", product.Stock.Name);
-            ViewData["SupplyId"] = new SelectList(_context.Users, "Id", "SupplyName", product.User.SupplyName);
+            ViewData["BrandId"] = new SelectList(await _brandServices.GetBrand(), "Id", "ShortName", product.Brand.ShortName);
+            ViewData["StockId"] = new SelectList(await _stockServices.GetStock(), "Id", "Name", product.Stock.Name);
+            ViewData["SupplyId"] = new SelectList(await _userServices.GetSupply(), "Id", "SupplyName", product.User.SupplyName);
             return View(product);
         }
 
@@ -159,17 +151,11 @@ namespace ManageExport_V2.Controllers
             {
                 return NotFound();
             }
-
-            var product = await _context.Products
-                .Include(p => p.Brand)
-                .Include(p => p.Stock)
-                .Include(p => p.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var product = await _productServices.GetProductById((int)id, new string[] { "User", "Stock", "Brand" });
             if (product == null)
             {
                 return NotFound();
             }
-
             return View(product);
         }
 
@@ -178,15 +164,112 @@ namespace ManageExport_V2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
+            await _productServices.DeleteProductById(id);
             return RedirectToAction(nameof(Index));
         }
 
         private bool ProductExists(int id)
         {
-            return _context.Products.Any(e => e.Id == id);
+            if (_productServices.GetProductById(id) != null)
+            {
+                return true;
+            }
+            return false;
         }
+        #endregion
+        #region Export        
+        public async Task<IActionResult> ExportProductPage(string id,string SubAgentId,string SubAgentName)
+        {
+            var exportProduct = new ExportProductPageViewModel();
+            var product = await _productServices.GetProductById(int.Parse(id), new string[] { "User", "Stock", "Brand" });
+            exportProduct.Product = product;
+            exportProduct.SAID = int.Parse(SubAgentId);
+            exportProduct.SubAgentName = SubAgentName;
+            if (exportProduct == null)
+            {
+                return NotFound();
+            }
+            return View(exportProduct);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ExportProductPage(ExportProductPageViewModel exportProduct,string ProductId)
+        {
+            // add to session.
+            if (ModelState.IsValid)
+            {
+                if (ProductId != null)
+                {
+                    var product = await _productServices.GetProductById(int.Parse(ProductId));
+                    exportProduct.Product = product;
+                    List<ExportProductPageViewModel> lstProducts = HttpContext.Session.GetComplexData<List<ExportProductPageViewModel>>("lstExportProduct");
+                    if (lstProducts == null)
+                    {
+                        HttpContext.Session.SetComplexData("lstExportProduct", new List<ExportProductPageViewModel>());
+                        lstProducts = HttpContext.Session.GetComplexData<List<ExportProductPageViewModel>>("lstExportProduct");
+                    }
+                    if (lstProducts != null)
+                    {
+                        foreach (var item in lstProducts)
+                        {
+                            if (item.Product.Code.Equals(exportProduct.Product.Code)&& exportProduct.ExportPrice==item.ExportPrice)
+                            {
+                                item.ExportNumber += exportProduct.ExportNumber;
+                                HttpContext.Session.SetComplexData("lstExportProduct", lstProducts);
+                                return RedirectToAction(nameof(Index), new { SubAgentId = exportProduct.SAID.ToString(), SubAgentName = exportProduct.SubAgentName });
+                            }
+                        }
+                        lstProducts.Add(exportProduct);
+                    }
+                    HttpContext.Session.SetComplexData("lstExportProduct", lstProducts);
+                    return RedirectToAction(nameof(Index),new { SubAgentId= exportProduct.SAID.ToString(), SubAgentName=exportProduct.SubAgentName});
+                }                            
+            }            
+            return View(exportProduct);
+        }
+        public async Task<IActionResult> ListExportProducts(string SubAgentId, string SubAgentName)
+        {
+            // view list export from session
+            List<ExportProductPageViewModel> lstProducts = HttpContext.Session.GetComplexData<List<ExportProductPageViewModel>>("lstExportProduct");
+            if (lstProducts != null)
+            {
+                ViewBag.SAID=SubAgentId;
+                ViewBag.SAName=SubAgentName;
+               
+                return View(lstProducts);
+            }            
+            return View(new List<ExportProductPageViewModel>());
+        }
+        public async Task<IActionResult> CreateExportBill()
+        {
+            // create export bill
+            List<ExportProductPageViewModel> lstProducts = HttpContext.Session.GetComplexData<List<ExportProductPageViewModel>>("lstExportProduct");
+            if (lstProducts != null)
+            {
+                var model = new ExportProductViewModel();
+                foreach (var item in lstProducts)
+                {
+                    model.SubsidiaryAgent = new User() { Id = item.SAID,UserType=UserType.SubsidiaryAgent };
+                    model.ExportManager = new User() { Id = 2,UserType=UserType.StockExportManager };                    
+                    model.ExportProducts.Add(item.Product);
+                    model.TotalMoney += item.ExportPrice;
+                    
+                }                                
+                _exportProductServices.AddExportProduct(model);
+                HttpContext.Session.Remove("lstExportProduct");                
+                return View("ListAllExportProducts");
+            }
+            return View(new List<ExportProductPageViewModel>());
+        }
+        public async Task<IActionResult> ListAllExportProducts()
+        {
+            // after click export view (List all export)
+
+            var lst = await _exportProductServices.ExportProduct(new string[] { "User" });
+            return View(lst);
+        }
+        #endregion
+
+
     }
 }

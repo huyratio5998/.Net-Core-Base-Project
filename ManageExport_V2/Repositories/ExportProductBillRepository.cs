@@ -12,6 +12,10 @@ namespace ManageExport_V2.Repositories
     {
         public ExportProductBillRepository(ExportContext context) : base(context)
         {
-        }       
+        }
+        public int? getNewId()
+        {
+            return _context.ExportProductBills?.OrderByDescending(x => x.Id)?.FirstOrDefault()?.Id;
+        }
     }
 }

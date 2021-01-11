@@ -121,7 +121,8 @@ namespace ManageExport_V2.Controllers
         {
             await _userServices.DeleteVirtual(id);
             return RedirectToAction(nameof(Index));
-        }      
+        }
         #endregion
+        
     }
 }

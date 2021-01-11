@@ -16,6 +16,9 @@ namespace ManageExport_V2.Services
             services.AddTransient<IExportProductServices, ExportProductServices>();
             services.AddTransient<IProductServices, ProductServices>();
             services.AddTransient<IStockServices, StockServices>();
+            services.AddTransient<IImageServices, ImageServices>();
+            services.AddTransient<IBrandServices, BrandServices>();
+            
 
             return services;
         }

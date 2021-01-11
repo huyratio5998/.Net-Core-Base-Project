@@ -1,0 +1,104 @@
+﻿@model ManageExport_V2.Models.ExportProductPageViewModel
+
+@{     
+    ViewData["Title"] = "Products";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var url = $"{Model.Product.Name}/{Model.Product.MainImage}";
+
+}
+<h1>Add to Product Product</h1>
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Product.Code)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Product.Code)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Product.DisplayName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Product.DisplayName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Product.MainImage)
+        </dt>
+        <dd class="col-sm-10">
+            @if (string.IsNullOrEmpty(Model.Product.MainImage))
+            {
+                <img style="width:300px;" src="~/images/People/images96.jpg" />
+
+            }
+            else
+            {
+                <img style="width: 300px;" src="~/images/Products/@url" />
+            }
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Product.Brand)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Product.Brand.ShortName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Product.Number)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Product.Number)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Product.Price)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Product.Price)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Product.MFG)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Product.MFG)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Product.EXP)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Product.EXP)
+        </dd>
+        <dt class="col-sm-2">
+            Supply
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.Product.User.FirstName + " " + Model.Product.User.LastName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Product.Stock)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Product.Stock.Name)
+        </dd>
+    </dl>
+    <form asp-action="ExportProductPage">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input asp-for="SAID" type="hidden" />
+        <input asp-for="SubAgentName" type="hidden" />
+        @Html.Hidden("ProductId", Model.Product.Id)
+        <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Export Number:</label>
+            <input asp-for="ExportNumber" class="form-control" />
+            <span asp-validation-for="ExportNumber" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="message-text" class="col-form-label">Export Price:</label>
+            <input asp-for="ExportPrice" class="form-control" />
+            <span asp-validation-for="ExportPrice" class="text-danger"></span>
+        </div>
+        <input type="submit" value="Add Export List" class="btn btn-primary" />
+    </form>
+</div>
+<div>
+    <a asp-action="Index">Export More Product</a>
+    <a asp-action="Index">Export List</a>
+</div>

@@ -14,9 +14,9 @@ namespace ManageExport_V2.Repositories
         {
 
         }
-        public int getNewId()
+        public int? getNewId()
         {
-            return _context.Users.OrderByDescending(x => x.Id).FirstOrDefault().Id;
+            return _context.Users?.OrderByDescending(x => x.Id)?.FirstOrDefault()?.Id;
         }
         public bool CheckLogin(string username, string password)
         {

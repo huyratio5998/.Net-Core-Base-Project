@@ -12,7 +12,11 @@ namespace ManageExport_V2.Repositories
     {
         public ProductRepository(ExportContext context): base(context)
         {
-
+           
+        }
+        public int? getNewId()
+        {           
+          return _context.Products?.OrderByDescending(x => x.Id)?.FirstOrDefault()?.Id;                       
         }
     }
 }

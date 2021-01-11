@@ -74,10 +74,10 @@ namespace ManageExport_V2.Repositories
                 var query = _dbSet.Include(includes.First());
                 foreach (var include in includes.Skip(1))
                     query = query.Include(include);
-                return await Task.FromResult(query.AsNoTracking());
+                return await Task.FromResult(query.AsNoTracking<T>());
             }
 
-            return await Task.FromResult(_dbSet.AsNoTracking());
+            return await Task.FromResult(_dbSet.AsNoTracking<T>());
         }
 
         public async Task<T> GetSingleByCondition(Expression<Func<T, bool>> expression, string[] includes = null)
@@ -130,8 +130,7 @@ namespace ManageExport_V2.Repositories
         public async Task<bool> CheckContains(Expression<Func<T, bool>> predicate)
         {
             return await Task.FromResult(_dbSet.Count<T>(predicate) > 0);
-        }
-
+        }       
         #endregion
     }
 }

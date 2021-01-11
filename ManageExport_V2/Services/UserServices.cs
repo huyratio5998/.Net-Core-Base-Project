@@ -51,7 +51,7 @@ namespace ManageExport_V2.Services
         public async Task CreateSubsidiaryAgent(User user)
         {
             //Insert record     
-            int NewestID = _unitOfWork.Users.getNewId().Equals(null) ? 0 : _unitOfWork.Users.getNewId();
+            int NewestID = _unitOfWork.Users.getNewId().Equals(null) ? 0 : (int)_unitOfWork.Users.getNewId();
             user.AgentCode = $"SA_{NewestID + 1}";
             user.CreatedDate = user.ModifiedDate = DateTime.UtcNow;
             user.ExpireContractDate = user.ExpireContractDate.ToUniversalTime();
@@ -89,12 +89,12 @@ namespace ManageExport_V2.Services
             return _unitOfWork.Users.CheckLogin(username, password);
         }
 
-        public Task<IEnumerable<User>> GetSupply()
+        public Task<IQueryable<User>> GetSupply()
         {
             try
             {
                 var users= _unitOfWork.Users.GetMulti(x => x.UserType.Equals(UserType.Supply) && x.IsActive);
-                return (Task<IEnumerable<User>>)users.Result;
+                return users;
             }
             catch (Exception e)
             {
