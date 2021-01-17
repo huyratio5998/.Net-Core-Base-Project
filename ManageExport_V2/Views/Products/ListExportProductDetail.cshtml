@@ -1,0 +1,71 @@
+﻿@model IEnumerable<ExportListDetail>
+@using ManageExport_V2.Models.Entity;
+@{
+    ViewData["Title"] = "Products";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p>
+    <a asp-controller="Products" asp-action="CreateExportBill">Export List Product</a> |
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Code
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Image
+            </th>           
+            <th>
+                Number
+            </th>
+
+            <th>
+                Price
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var url = $"{item.Products.Name}/{item.Products.MainImage}";            
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Products.Code)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Products.Id"> @Html.DisplayFor(modelItem => item.Products.Name)</a>
+                </td>
+                <td>
+                    @if (string.IsNullOrEmpty(item.Products.MainImage))
+                    {
+                        <img style="width:150px;height:150px;" src="~/images/People/images96.jpg" />
+
+                    }
+                    else
+                    {
+                        <img style="width:150px;height:150px;" src="~/images/Products/@url" />
+                    }
+                </td>
+               
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExportNumber)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExportPrice)
+                </td>
+
+                <td>                   
+                    <a asp-action="Edit" asp-route-id="@item.Products.Id">Update</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Products.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

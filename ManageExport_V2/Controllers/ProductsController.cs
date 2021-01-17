@@ -250,14 +250,18 @@ namespace ManageExport_V2.Controllers
                 foreach (var item in lstProducts)
                 {
                     model.SubsidiaryAgent = new User() { Id = item.SAID,UserType=UserType.SubsidiaryAgent };
-                    model.ExportManager = new User() { Id = 2,UserType=UserType.StockExportManager };                    
-                    model.ExportProducts.Add(item.Product);
-                    model.TotalMoney += item.ExportPrice;
-                    
+                    model.ExportManager = new User() { Id = 1,UserType=UserType.StockExportManager };
+                    var exportProduct = item.Product;
+                    exportProduct.ExportNumber = item.ExportNumber;
+                    exportProduct.ExportPrice = item.ExportPrice;
+                    model.ExportProducts.Add(exportProduct);
+                    model.TotalMoney += (item.ExportNumber* item.ExportPrice);
+                    model.ExportDate = DateTime.UtcNow;
+
                 }                                
-                _exportProductServices.AddExportProduct(model);
-                HttpContext.Session.Remove("lstExportProduct");                
-                return View("ListAllExportProducts");
+                await _exportProductServices.AddExportProduct(model);
+                HttpContext.Session.Remove("lstExportProduct");
+                return RedirectToAction("ListAllExportProducts");
             }
             return View(new List<ExportProductPageViewModel>());
         }
@@ -267,6 +271,17 @@ namespace ManageExport_V2.Controllers
 
             var lst = await _exportProductServices.ExportProduct(new string[] { "User" });
             return View(lst);
+        }
+
+        public async Task<IActionResult> ListExportProductDetail(int Id)
+        {
+            var exportProductDetail = await _exportProductServices.GetExportProductDetail(Id, new string[] { "Products"});
+            foreach (var product in exportProductDetail)
+            {
+                product.Products.ExportNumber = product.ExportNumber;
+                product.Products.ExportPrice = product.ExportPrice;
+            }
+            return View(exportProductDetail);
         }
         #endregion
 

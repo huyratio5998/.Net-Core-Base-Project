@@ -21,7 +21,7 @@ namespace ManageExport_V2.Services
         {
            return  _unitOfWork.ExportProductBillRepositorys.GetAll(includes);            
         }
-        public bool AddExportProduct(ExportProductViewModel exportProductViewModel)
+        public async Task<bool> AddExportProduct(ExportProductViewModel exportProductViewModel)
         {
             try
             {
@@ -36,25 +36,33 @@ namespace ManageExport_V2.Services
                 exportProductBill.CreatedDate = DateTime.UtcNow;
                 exportProductBill.ModifiedDate = DateTime.UtcNow;
                 _unitOfWork.ExportProductBillRepositorys.Add(exportProductBill);
-                _unitOfWork.Commit();
+                await _unitOfWork.Commit();
+                int ProductBillId = exportProductBill.Id;
                 foreach (var item in exportProductViewModel.ExportProducts)
                 {
                     // add exportProductBillDetail
                     ExportListDetail product = new ExportListDetail();
                     product.ProductId = item.Id;
-                    product.ExportProductBillId = exportProductBill.Id;
+                    product.ExportNumber = item.ExportNumber;
+                    product.ExportPrice = item.ExportPrice;
+                    product.ExportProductBillId = ProductBillId;
                     product.CreatedDate = DateTime.UtcNow;
                     product.ModifiedDate = DateTime.UtcNow;
                     product.ExportDate = DateTime.UtcNow;                                        
-                    _unitOfWork.ExportListDetailRepositorys.Add(product);                                 
-                }               
-                _unitOfWork.Commit();
+                    _unitOfWork.ExportListDetailRepositorys.Add(product);
+                    await _unitOfWork.Commit();
+                }
                 return true;
             }
             catch (Exception e)
             {
                 return false;                
             }
+        }
+
+        public Task<IQueryable<ExportListDetail>> GetExportProductDetail(int ProductBillId, string[] includes = null)
+        {
+            return _unitOfWork.ExportListDetailRepositorys.GetMulti(x=>x.ExportProductBillId==ProductBillId,includes);
         }
     }
 }

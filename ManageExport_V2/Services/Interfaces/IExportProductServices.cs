@@ -11,6 +11,7 @@ namespace ManageExport_V2.Services.Interfaces
     public interface IExportProductServices
     {
         Task<IQueryable<ExportProductBill>> ExportProduct(string[] includes = null);
-        bool AddExportProduct(ExportProductViewModel exportProductViewModel);
+        Task<bool> AddExportProduct(ExportProductViewModel exportProductViewModel);
+        Task<IQueryable<ExportListDetail>> GetExportProductDetail(int ProductBillId, string[] includes = null);
     }
 }

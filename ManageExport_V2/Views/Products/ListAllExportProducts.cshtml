@@ -31,7 +31,7 @@
             var exportDate = item.ExportDate.ToLocalTime();
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Code)
+                    <a asp-action="ListExportProductDetail" asp-route-id="@item.Id"> @Html.DisplayFor(modelItem => item.Code) </a>
                 </td>
                 <td>
                      @Html.DisplayFor(modelItem => item.TotalMoney)
